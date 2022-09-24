@@ -15,7 +15,7 @@ class Reto():
 		self.usuario		= usuario
 		
 		self.nombre_mapa =''
-		
+				
 		if self.nro_reto==1:
 			self.nombre_mapa="La furia de Ragnar"
 		elif self.nro_reto==2:
@@ -28,15 +28,12 @@ class Reto():
 		os.system("clear")
 		
 		mapa_reto.muestra_historia()
-		print("Llamada heroe_busca..")
 		mapa_reto.heroe_busca('*')
 		
-		print ('\n')
-		
 		input("#>>") # Elusuario irá avanzando según desee
-		
-		print ('\n')
-		
+
+		os.system("clear")
+
 		mapa_reto.muestra_mapa_explorado()
 		
 		opcion=0
@@ -85,29 +82,27 @@ class Reto():
 			if opcion == 2 :
 
 				hay_trampa 	= mapa_reto.heroe_busca('º') #abismo
-				sw		= False
 				
 				if hay_trampa==True:
-					print (Fore.YELLOW+"\n ¡Mira que eres astut@! \n Efectivamente había un abismo oculto que has salvado en un hábil movimiento.\n")
-					sw= True
+					print (Fore.YELLOW+"\n ¡Mira que eres astut@! \n Efectivamente había un abismo oculto que has salvado en un hábil movimiento.")
 				else:
-					print (Fore.YELLOW+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
+					print (Fore.YELLOW+"\n No hay ningún abismo por aquí.")
 
-				
+				hay_trampa=False;
 				hay_trampa = mapa_reto.heroe_busca('>')	#felchas
 				
-				if (hay_trampa==True and sw==False):
+				if (hay_trampa==True):
 					print (Fore.YELLOW+"\n ¡Esos reflejos son admirables! \n Pisas una baldosa floja que activa una trampa de flechas, pero en un hábil\n movimiento logras esquivarlas.")
-					sw=True
-				elif sw==False:
-					print (Fore.YELLOW+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
-
+				else:
+					print (Fore.YELLOW+"\n Te has librado pues no hay trampas de flechas  a la vista.")
+				
+				hay_trampa=False;
 				hay_trampa = mapa_reto.heroe_busca('Ç') #roca caida
 
-				if (hay_trampa==True and sw==False):
-					print (Fore.YELLOW+"\n ¡El techo se derrumba! \n Por los pelos mi audaz guerrer@. Por esta vez solo ha sido un chichon.\n")
-				elif sw==False:
-					print (Fore.YELLOW+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
+				if (hay_trampa==True):
+					print (Fore.YELLOW+"\n ¡El techo se derrumba! \n Por los pelos mi audaz guerrer@. Por esta vez solo ha sido un chichon y te salvas de una buena.")
+				else:
+					print (Fore.YELLOW+"\n El techo está en buen estado. Esta vez no te caerá ninguna roca en la cabeza..")
 				
 				
 
@@ -137,7 +132,7 @@ class Reto():
 			#-------------------------------------------------------
 			if opcion == 4 :
 				init()	
-			
+				os.system("clear")
 				print (Fore.WHITE+'\n Tira los dados.. \n')	
 				
 				tirada = random.randrange(2,12,1)
@@ -155,20 +150,23 @@ class Reto():
 				
 				print(Fore.WHITE+"muevete #>>")
 				movimiento=0		
-				while movimiento<=tirada:
+				while movimiento<tirada:
+					
 					k = self.captura_tecla()
 					if k==1072:  # Arriba
-						mapa_reto.heroe_se_mueve("up")
+						mensaje=mapa_reto.heroe_se_mueve("up")
 					if k==1080:  # Abajo
-						mapa_reto.heroe_se_mueve("down")
+						mensaje=mapa_reto.heroe_se_mueve("down")
 					if k==1075:  # Izquierda
-						mapa_reto.heroe_se_mueve("left")
+						mensaje=mapa_reto.heroe_se_mueve("left")
 					if k==1077:  # Derecha
-						mapa_reto.heroe_se_mueve("right")
+						mensaje=mapa_reto.heroe_se_mueve("right")
 					movimiento+=1
 					
-				os.system("clear")
-				mapa_reto.muestra_mapa_explorado()
+					os.system("clear")
+					mapa_reto.muestra_mapa_explorado()
+					print(Fore.YELLOW+mensaje)
+		os.system("clear")
 
 
 				

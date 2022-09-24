@@ -2,9 +2,12 @@
 #Aqui se encontrarán las funciones de apertura de partidas, guardado de partidas y todo lo referente a cosas genéricas del juego
 from colorama import init, Fore, Back
 from reto import Reto
+import os
 
+os.system("clear")
 print ("\n")
 print ("\n")
+print (Fore.YELLOW+"#>The terminal rol game\n") 
 print (Fore.GREEN+ "   ▄█    █▄       ▄████████    ▄████████  ▄██████▄  ████████▄   ███    █▄     ▄████████    ▄████████     ███    ") 
 print (Fore.GREEN+ "  ███    ███     ███    ███   ███    ███ ███    ███ ███    ███  ███    ███   ███    ███   ███    ███ ▀█████████▄") 
 print (Fore.GREEN+ "  ███    ███     ███    █▀    ███    ███ ███    ███ ███    ███  ███    ███   ███    █▀    ███    █▀     ▀███▀▀██") 
@@ -29,6 +32,7 @@ print (Fore.WHITE+" 3 . Nueva partida      ")
 print (Fore.WHITE+" 99. Salir              ")
 print ("\n")
 
+
 while True:
 	try:
 		opcion = int(input(Fore.WHITE+"#>>"))
@@ -46,15 +50,16 @@ elif opcion==2:
 	print ("\n")
 	
 elif opcion==3:
-	
+	os.system("clear")
 	print ("\n")
-	print (" Elige uno de los retos ")
-	print ("________________________")
-	print ("  1. La furia de Ragnar ")
-	print ("  2. El mal nos persigue")
+	print (" Elige uno de los retos  ")
+	print ("_________________________")
+	print ("  1 . La furia de Ragnar ")
+	print ("  2 . El mal nos persigue")
 	print ("\n")
 	opcion = int(input("#>>"))
 	
 	_reto = Reto(1,3,'') # Al objeto Reto se le pasa el nro del reto, si es carga o nueva (opcion) y el ultimo parámetro es para cargar un reto ya iniciado.
 	print ("\n")
 	_reto.iniciar_partida()
+elif opcion==99: print("bye, bye..")
