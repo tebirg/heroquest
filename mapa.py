@@ -57,7 +57,7 @@ class Mapa():
 			
 			for k in range(len(linea)):
 
-				if linea[k].isdigit()== False:
+				if (linea[k].isdigit()== False and k<137 and linea[k]!='-' and linea[k]!='|') :
 					# Si estamos en la ultima casilla ha de ser fin de linea.
 					if k==136:
 						salto="\n"
@@ -123,11 +123,11 @@ class Mapa():
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	def muestra_historia(self):
 		init() #Para reiniciar colorama
-
+		print('\n')
 		for i in range(len(self.mapa_reto)):
 			linea=self.mapa_reto[i].strip()
 			if linea=="fin_texto_reto": break
-			print (Fore.YELLOW+linea)
+			print (Fore.YELLOW+"\t"+linea)
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	# Esta funcion buscará cualquier objeto en el mapa que se encuentre a la vista del personaje.
@@ -168,6 +168,7 @@ class Mapa():
 		# G Enemigo Gargola
 
 		# Quitamos de la lectura la parte del texto inicial del reto.
+		print("heroe busca.."+objeto)
 		for t in range(len(self.mapa_reto)):
 			linea=self.mapa_reto[t].strip()
 			if linea=="fin_texto_reto": break
@@ -192,17 +193,680 @@ class Mapa():
 							lista[k+1]= "2"
 							linea= "".join(lista)
 							self.mapa_reto[i]=linea
+							break
 
 					elif (linea[k]=='*' and objeto=='*'): # Esto retorna la posicion del heroe
 						fila	=i
 						columna	=k
 						self.pos_hero=self.esta_en(i,k)
+						break
 
 
 		if fila!=0 and columna!=0:
 			return True
 		else:
 			return False
+
+	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
+	# Esta funcion buscará moverá al personaje
+	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
+	def heroe_se_mueve(self,movimiento):
+		print("heroe se mueve..")
+		fila	=0 # Será la fila de retorno
+		columna	=0 #será la columna de retorno
+		sw=True
+		mensaje=''
+		self.heroe_busca("*") #Actualizamos la nueva posicion de nuestro heroe
+		posicion_actual = self.pos_hero
+						
+		# Quitamos de la lectura la parte del texto inicial del reto.
+		for t in range(len(self.mapa_reto)):
+			linea=self.mapa_reto[t].strip()
+			if linea=="fin_texto_reto": break
+
+		# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+		for i in range(t+2,len(self.mapa_reto)):
+
+			linea=self.mapa_reto[i].strip()
+
+		# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+			for k in range(len(linea)):
+				if linea[k].isdigit()== False:
+			# -------------- mueve arriba ---------------------------
+					
+					if linea[k]=='*' and movimiento=="up" and sw==True:				
+						fila	=i
+						columna	=k
+						
+						posicion_donde_mueve=self.esta_en(i-1,columna)
+						
+						lista = list(linea)
+						lista[columna]= "■"
+						
+						linea= "".join(lista)
+						self.mapa_reto[i]=linea
+
+						linea=self.mapa_reto[i-1].strip() #Avanzamos una linea abajo
+						lista = list(linea)
+
+						if lista[columna]=='■' and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
+							lista[columna]= "*"
+							linea= "".join(lista)
+							self.mapa_reto[i-1]=linea
+#							self.muestra_mapa_explorado()
+							break
+						
+						# Ç Trampa de roca caida
+						# º  trampa de abismo (ALT 176)
+						# > Trampa flechas
+						elif lista[columna]=='>' or lista[columna]=='º' or lista[columna]=='Ç':
+
+							if lista[columna + 1]== "2" :
+								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
+								# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+								linea=self.mapa_reto[i].strip()
+								lista = list(linea)
+								lista[columna]= "*"		
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								sw=False
+								break
+							elif lista[columna + 1]== "1" : #En este caso activa la trampa
+								if lista[columna]=='>': mensaje=" Una cordel que no has visto y el cual cruzaba el pasillo a activado el certero tiro de una ballesta.\nDeberás luchar por sobrevivir.."
+								if lista[columna]=='º': mensaje=" ¡El suelo bajo tus pies se derrumba y te ves atrapado!\nDeberás luchar por sobrevivir.."
+								if lista[columna]=='Ç': mensaje=" ¡Este viejo castillo no durará mucho en pie, ahora ves como el techo se derummba!\nDeberás luchar por sobrevivir.."
+								lista[columna]= "*"
+								linea= "".join(lista)
+								self.mapa_reto[i-1]=linea
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+						# ^ Puerta secreta
+						# ® Tesoro
+						elif lista[columna]=='®' or lista[columna]=='^':
+							if lista[columna + 1]== "2" :
+								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
+								# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+								linea=self.mapa_reto[i].strip()
+								lista = list(linea)
+								lista[columna]= "*"		
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								sw=False
+								break
+							elif lista[columna + 1]== "1" : #hay q ver como restaurar el tesoro que había.. o lo que hubiese.. quizas con un 3 para indicar que se ha de leer del original
+								lista[columna]= "*"
+								lista[columna + 1]="3"
+								linea= "".join(lista)
+								self.mapa_reto[i-1]=linea
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+						
+						elif linea[columna]== "g":
+							mensaje="Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						# o Enemigo Orco
+						elif linea[columna]== "o":
+							mensaje="¿En serio te crees que un Orco va ha dejarte pasar..? \n Yo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						# f Enemigo Fimir
+						elif linea[columna]== "f":
+							mensaje="Los Firmir no son muy amistosos.. \n Yo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						# m Enemigo Momia
+						elif linea[columna]== "m":
+							mensaje="Con el vendaje de esa momia podrías curar muchas heridas pero, \n yo que tu la esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						# e Enemigo Esqueleto
+						elif linea[columna]== "e":
+							mensaje="No te vas a colar entre los huesos de este esqueleto, \n yo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						# b Enemigo Malbado brujo
+						elif linea[columna]== "b":
+							mensaje="Si hay un malo entre los malos ese es Malbado Brujo, \n yo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						# G Enemigo Gargola
+						elif linea[columna]== "G":
+							mensaje="Esta Gárgola no tiene cara de buenos amigos..\n Yo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						#Muebles
+						elif linea[columna]== "[" or linea[columna]== "]" or linea[columna]== "#":
+							mensaje="Parece que te has dado un golpe contra el mobiliario.\nCamina con cuidado guerrero.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna]!= "¥":
+							mensaje="Parece que te has dado un golpe contra estas viejas paredes.\nCamina con cuidado.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							break
+						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
+							
+							if linea[columna]== "¥":
+								linea=self.mapa_reto[i-2].strip() #Avanzamos una linea abajo
+								lista = list(linea)
+								lista[columna]='*'
+								linea= "".join(lista)
+								self.mapa_reto[i-2]=linea
+								posicion_donde_mueve=self.esta_en(i-2,columna)
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+							else: #CaMBIA DE PASILLO
+								lista = list(linea)
+								lista[columna]='*'
+								linea= "".join(lista)
+								self.mapa_reto[i-2]=linea
+								posicion_donde_mueve=self.esta_en(i-2,columna)
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+
+						sw=False
+						print('\n')
+						break
+			# -------------- mueve abajo ---------------------------
+					if linea[k]=='*' and movimiento=="down" and sw==True:				
+						fila	=i
+						columna	=k
+						posicion_donde_mueve=self.esta_en(i+1,columna)
+						lista = list(linea)
+						
+						lista[columna]= "■"
+						
+						linea= "".join(lista)
+						self.mapa_reto[i]=linea
+						
+						linea=self.mapa_reto[i+1].strip() #Avanzamos una linea abajo
+						lista = list(linea)
+						
+						if lista[columna]=='■' and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
+							lista[columna]= "*"
+							linea= "".join(lista)
+							self.mapa_reto[i+1]=linea
+#							self.muestra_mapa_explorado()
+							sw=False
+							break
+						
+						# Ç Trampa de roca caida
+						# º  trampa de abismo (ALT 176)
+						# > Trampa flechas
+						elif lista[columna]=='>' or lista[columna]=='º' or lista[columna]=='Ç':
+							
+							if lista[columna + 1]== "2" :
+								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
+								# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+								linea=self.mapa_reto[i].strip()
+								lista = list(linea)
+								lista[columna]= "*"		
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								sw=False
+								break
+								
+							elif lista[columna + 1]== "1" : #Ha caido en una trampa
+								if lista[columna]=='>': 
+									mensaje=" Un cordel que no has visto y el cual cruzaba el pasillo a activado el certero tiro de una ballesta.\nDeberás luchar por sobrevivir.."
+								if lista[columna]=='º': 
+									mensaje=" ¡El suelo bajo tus pies se derrumba y te ves atrapado!\nDeberás luchar por sobrevivir.."
+								if lista[columna]=='Ç': 
+									mensaje=" ¡Este viejo castillo no durará mucho en pie, ahora ves como el techo se derummba!\nDeberás luchar por sobrevivir.."
+								lista[columna]= "*"
+								linea= "".join(lista)
+								self.mapa_reto[i+1]=linea
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+						# ^ Puerta secreta
+						# ® Tesoro
+						elif lista[columna]=='®' or lista[columna]=='^':
+							if lista[columna + 1]== "2" :
+								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
+								# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+								linea=self.mapa_reto[i].strip()
+								lista = list(linea)
+								lista[columna]= "*"		
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								sw=False
+								break
+							elif lista[columna + 1]== "1" : #hay q ver como restaurar el tesoro que había.. o lo que hubiese.. quizas con un 3 para indicar que se ha de leer del original
+								lista[columna]= "*"
+								lista[columna + 1]="3"
+								linea= "".join(lista)
+								self.mapa_reto[i+1]=linea
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+						
+						elif linea[columna]== "g":
+							mensaje="Este Goblin no tiene pinta de dejarte pasar..\nYo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						# o Enemigo Orco
+						elif linea[columna]== "o":
+							mensaje="¿En serio te crees que un Orco va ha dejarte pasar..? \nYo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						# f Enemigo Fimir
+						elif linea[columna]== "f":
+							mensaje="Los Firmir no son muy amistosos.. \nYo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						# m Enemigo Momia
+						elif linea[columna]== "m":
+							mensaje="Con el vendaje de esa momia podrías curar muchas heridas pero, \nyo que tu la esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						# e Enemigo Esqueleto
+						elif linea[columna]== "e":
+							mensaje="No te vas a colar entre los huesos de este esqueleto, \nyo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						# b Enemigo Malbado brujo
+						elif linea[columna]== "b":
+							mensaje="Si hay un malo entre los malos ese es Malbado Brujo, \nyo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						# G Enemigo Gargola
+						elif linea[columna]== "G":
+							mensaje="Esta Gárgola no tiene cara de buenos amigos..\nYo que tu lo esquivaría.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						#Muebles
+						elif linea[columna]== "[" or linea[columna]== "]" or linea[columna]== "#":
+							mensaje="Parece que te has dado un golpe contra el mobiliario.\nCamina con cuidado guerrero.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna]!= "¥":
+							mensaje="Parece que te has dado un golpe contra estas viejas paredes.\nCamina con cuidado.\n"
+							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
+							linea=self.mapa_reto[i].strip()
+							lista = list(linea)
+							lista[columna]= "*"		
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							sw=False
+							break
+
+						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
+							
+							if linea[columna]== "¥":
+								linea=self.mapa_reto[i+2].strip() #Avanzamos una linea abajo
+								lista = list(linea)
+								lista[columna]='*'
+								linea= "".join(lista)
+								self.mapa_reto[i+2]=linea
+								posicion_donde_mueve=self.esta_en(i+2,columna)
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+							else: #CaMBIA DE PASILLO
+								lista = list(linea)
+								lista[columna]='*'
+								linea= "".join(lista)
+								self.mapa_reto[i+2]=linea
+								posicion_donde_mueve=self.esta_en(i+2,columna)
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+
+						sw=False
+						print('\n')
+						break
+						
+			# -------------- mueve izquierda ---------------------------
+					if linea[k]=='*' and movimiento=="left" and k>=2:
+						fila	=i
+						columna	=k
+					
+						posicion_donde_mueve=self.esta_en(fila,columna-2)
+
+						if linea[columna-2]== "■" and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
+							self.pos_hero=self.esta_en(fila,(columna-2))
+							lista = list(linea)
+							lista[columna-2]= "*"                        # Es -2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
+							lista[columna]= "■"
+												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+#							self.muestra_mapa_explorado()
+							sw=False
+							break
+						# ^ Puerta secreta
+						# Ç Trampa de roca caida
+						# º  trampa de abismo (ALT 176)
+						# > Trampa flechas
+						# ® Tesoro
+						elif linea[columna-2]=='®' or linea[columna-2]=='>' or linea[columna-2]=='º' or linea[columna-2]=='Ç' or linea[columna-2]=='^':
+							if linea[columna - 3]== "2" :
+								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
+								sw=False
+								break
+							elif linea[columna - 3]== "1" : #hay q ver como restaurar el tesoro que había.. o lo que hubiese.. quizas con un 3 para indicar que se ha de leer del original
+								self.pos_hero=self.esta_en(fila,(columna-2))
+								lista = list(linea)
+								lista[columna-2]= "*"
+								lista[columna - 3]== "3"
+								lista[columna]= "■"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+		
+						# g Enemigo Goblin
+						elif linea[columna-2]== "g":
+							print(Fore.YELLOW+"Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n")
+							sw=False
+							break
+						# o Enemigo Orco
+						elif linea[columna-2]== "o":
+							mensaje="¿En serio te crees que un Orco va ha dejarte pasar..? \n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# f Enemigo Fimir
+						elif linea[columna-2]== "f":
+							mensaje="Los Firmir no son muy amistosos.. \n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# m Enemigo Momia
+						elif linea[columna-2]== "m":
+							mensaje="Con el vendaje de esa momia podrías curar muchas heridas pero, \n yo que tu la esquivaría.\n"
+							sw=False
+							break
+
+						# e Enemigo Esqueleto
+						elif linea[columna-2]== "e":
+							mensaje="No te vas a colar entre los huesos de este esqueleto, \n yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# b Enemigo Malbado brujo
+						elif linea[columna-2]== "b":
+							mensaje="Si hay un malo entre los malos ese es Malbado Brujo, \n yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# G Enemigo Gargola
+						elif linea[columna-2]== "G":
+							mensaje="Esta Gárgola no tiene cara de buenos amigos..\n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+						#Muebles
+						elif linea[columna-2]== "[" or linea[columna-2]== "]" or linea[columna-2]== "#":
+							mensaje="Parece que te has dado un golpe contra el mobiliario.\n Camina con cuidado guerrero.\n"
+							sw=False
+							break
+						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna-2]!= "¥":
+							mensaje="Parece que te has dado un golpe contra estas viejas paredes.\n Camina con cuidado.\n"
+							sw=False
+							break
+						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
+														
+							if linea[columna-2]== "¥":
+								lista = list(linea)
+								self.pos_hero=self.esta_en(fila,(columna-4))
+								posicion_donde_mueve=self.esta_en(fila,columna-4) #Actualizamos donde mueve pues ha cruzado una puerta y aqui suma +4 para cruzarla
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+								lista[columna-4]= "*" # Esto es para cruzar la puerta
+								lista[columna]="■"
+								sw=False
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								self.muestra_mapa_explorado()
+								break
+							else:
+								lista = list(linea)
+								self.pos_hero=self.esta_en(fila,(columna-2))
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+								lista[columna]="■"
+								lista[columna-2]= "*"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								sw=False
+								self.muestra_mapa_explorado()
+								break
+							
+			# -------------- mueve derecha ---------------------------
+					elif linea[k]=='*' and movimiento=="right" and k<=135 :
+						fila	=i
+						columna	=k
+						
+						posicion_donde_mueve=self.esta_en(fila,columna+2)
+						lista = list(linea)
+						
+						if linea[columna+2]== "■" and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
+							self.pos_hero=self.esta_en(fila,(columna+2))
+							lista[columna+2]= "*"                        # Es +2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
+							lista[columna]= "■"
+							sw=False
+												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+#							self.muestra_mapa_explorado()
+							print('\n')
+							break
+						# ^ Puerta secreta
+						# Ç Trampa de roca caida
+						# º  trampa de abismo (ALT 176)
+						# > Trampa flechas
+						# ® Tesoro
+						elif lista[columna+2]=='®' or lista[columna+2]=='>' or lista[columna+2]=='º' or lista[columna+2]=='Ç' or lista[columna+2]=='^':
+							if lista[columna + 3]== "2" :
+								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
+								sw=False
+								break
+							elif lista[columna + 3]== "1" : #hay q ver como restaurar el tesoro que había.. o lo que hubiese.. quizas con un 3 para indicar que se ha de leer del original
+								self.pos_hero=self.esta_en(fila,(columna+2))
+								lista[columna+2]= "*"
+								lista[columna + 3]== "3"
+								lista[columna]= "■"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								sw=False
+#								self.muestra_mapa_explorado()
+								break
+						# g Enemigo Goblin
+						elif linea[columna+2]== "g":
+							mensaje="Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+						# o Enemigo Orco
+						elif linea[columna+2]== "o":
+							mensaje="¿En serio te crees que un Orco va ha dejarte pasar..? \n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# f Enemigo Fimir
+						elif linea[columna+2]== "f":
+							mensaje="Los Firmir no son muy amistosos.. \n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# m Enemigo Momia
+						elif linea[columna+2]== "m":
+							mensaje="Con el vendaje de esa momia podrías curar muchas heridas pero, \n yo que tu la esquivaría.\n"
+							sw=False
+							break
+
+						# e Enemigo Esqueleto
+						elif linea[columna+2]== "e":
+							mensaje="No te vas a colar entre los huesos de este esqueleto, \n yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# b Enemigo Malbado brujo
+						elif linea[columna+2]== "b":
+							mensaje="Si hay un malo entre los malos ese es Malbado Brujo, \n yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						# G Enemigo Gargola
+						elif linea[columna+2]== "G":
+							mensaje="Esta Gárgola no tiene cara de buenos amigos..\n Yo que tu lo esquivaría.\n"
+							sw=False
+							break
+
+						#Muebles
+						elif linea[columna+2]== "[" or linea[columna+2]== "]" or linea[columna+2]== "#":
+							mensaje="Parece que te has dado un golpe contra el mobiliario.\n Camina con cuidado guerrero.\n"
+							sw=False
+							break
+						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna+2]!= "¥":
+							mensaje="Parece que te has dado un golpe contra estas viejas paredes.\n Camina con cuidado.\n"
+							sw=False
+							break
+						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
+							print("Entra en es distinto.."+str(columna))					
+							if linea[columna+2]== "¥":
+								lista = list(linea)
+								self.pos_hero=self.esta_en(fila,(columna+4))
+								posicion_donde_mueve=self.esta_en(fila,columna+4) #Actualizamos donde mueve pues ha cruzado una puerta y aqui suma +4 para cruzarla
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+								lista[columna+4]= "*" # Esto es para cruzar la puerta
+								lista[columna]="■"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								self.muestra_mapa_explorado()
+								sw=False
+								break
+							else:
+								lista = list(linea)
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
+								self.pos_hero=self.esta_en(fila,(columna+2))
+								lista[columna]="■"
+								lista[columna+2]= "*"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								self.muestra_mapa_explorado()
+								sw=False
+								break
+							
+							
+
+							print('\n')
+							sw=False
+							break
+							
+					elif (linea[k]=='*' and movimiento=="right" and k>135) or (linea[k]=='*' and movimiento=="left" and k<2) :
+						mensaje="Parece que te has dado un golpe contra estas viejas paredes.\n Camina con cuidado.\n"
+						sw=False
+						break
+							
+		return(mensaje)
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	# Esta funcion devuelve la situación del personaje, monstruo u objeto, asi podremos saber que puede ver y que no.
@@ -215,32 +879,32 @@ class Mapa():
 
 
 		#situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':0}
-		#print(Fore.WHITE+"Devolver posicion para fila:"+str(fila)+" y columna:"+str(columna))
+		print(Fore.WHITE+"Devolver posicion para fila:"+str(fila)+" y columna:"+str(columna))
 
 		if fila==10  and columna==0 			:
-			situacion = {'Tipo':'pasillo','Horizontal':1,'Vertical':1}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':1}	#interseccion
 		elif fila==10  and columna==136 			:
-			situacion = {'Tipo':'pasillo','Horizontal':1,'Vertical':4} 	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':4} 	#interseccion
 		elif fila==23 and columna==0 			:
-			situacion = {'Tipo':'pasillo','Horizontal':10,'Vertical':1}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':1}	#interseccion
 		elif fila==23 and columna==136 			:
-			situacion = {'Tipo':'pasillo','Horizontal':10,'Vertical':4}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':4}	#interseccion
 		elif fila==23 and columna==48 			:
-			situacion = {'Tipo':'pasillo','Horizontal':10,'Vertical':2}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':2}	#interseccion
 		elif fila==19  and columna==48 			:
-			situacion = {'Tipo':'pasillo','Horizontal':9,'Vertical':2}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':2}	#interseccion
 		elif fila==19  and columna==86 			:
-			situacion = {'Tipo':'pasillo','Horizontal':9,'Vertical':3}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':3}	#interseccion
 		elif fila==23 and columna==86 			:
-			situacion = {'Tipo':'pasillo','Horizontal':10,'Vertical':3}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':3}	#interseccion
 		elif fila==28 and columna==48 			:
-			situacion = {'Tipo':'pasillo','Horizontal':11,'Vertical':2}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':11,'Vertical':2}	#interseccion
 		elif fila==28 and columna==86 			:
-			situacion = {'Tipo':'pasillo','Horizontal':11,'Vertical':3}	#interseccion
-		elif fila==35 and columna==0 			:
-			situacion = {'Tipo':'pasillo','Horizontal':18,'Vertical':1}	#interseccion
-		elif fila==35 and columna==136 			:
-			situacion = {'Tipo':'pasillo','Horizontal':18,'Vertical':4}	#interseccion
+			situacion = {'Tipo':'intersec','Horizontal':11,'Vertical':3}	#interseccion
+		elif fila==34 and columna==0 			:
+			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':1}	#interseccion
+		elif fila==34 and columna==136 			:
+			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':4}	#interseccion
 		elif fila==10					:
 			situacion = {'Tipo':'pasillo','Horizontal':1,'Vertical':0}
 		elif fila==12  and (columna>=60 and columna<=70)	:
@@ -340,499 +1004,12 @@ class Mapa():
 		else:
 			situacion = {'Tipo':'muro','Horizontal':fila,'Vertical':columna}
 		
-		#print(situacion)
+
 		return(situacion)
-			
-
-	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
-	# Esta funcion buscará moverá al personaje
-	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
-	def heroe_se_mueve(self,movimiento):
-
-		fila	=0 # Será la fila de retorno
-		columna	=0 #será la columna de retorno
-		sw=True
-		mensaje=''
-		self.heroe_busca("*") #Actualizamos la nueva posicion de nuestro heroe
-		posicion_actual = self.pos_hero
-						
-		# Quitamos de la lectura la parte del texto inicial del reto.
-		for t in range(len(self.mapa_reto)):
-			linea=self.mapa_reto[t].strip()
-			if linea=="fin_texto_reto": break
-
-		# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
-		for i in range(t+2,len(self.mapa_reto)):
-
-			linea=self.mapa_reto[i].strip()
-
-		# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
-			for k in range(len(linea)):
-				if linea[k].isdigit()== False:
-			# -------------- mueve arriba ---------------------------
-					
-					if linea[k]=='*' and movimiento=="up" and sw==True:				
-						fila	=i
-						columna	=k
-						
-						posicion_donde_mueve=self.esta_en(i-1,columna)
-						
-						lista = list(linea)
-						lista[columna]= "■"
-						
-						linea= "".join(lista)
-						self.mapa_reto[i]=linea
-
-						linea=self.mapa_reto[i-1].strip() #Avanzamos una linea abajo
-						lista = list(linea)
-												
-						if lista[columna]=='■':
-							lista[columna]= "*"
-							linea= "".join(lista)
-							self.mapa_reto[i-1]=linea
-							self.muestra_mapa_explorado()
-						elif linea[columna]== "g":
-							mensaje="Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-							break
-						# o Enemigo Orco
-						elif linea[columna]== "o":
-							mensaje="¿En serio te crees que un Orco va ha dejarte pasar..? \n Yo que tu lo esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# f Enemigo Fimir
-						elif linea[columna]== "f":
-							mensaje="Los Firmir no son muy amistosos.. \n Yo que tu lo esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# m Enemigo Momia
-						elif linea[columna]== "m":
-							mensaje="Con el vendaje de esa momia podrías curar muchas heridas pero, \n yo que tu la esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# e Enemigo Esqueleto
-						elif linea[columna]== "e":
-							mensaje="No te vas a colar entre los huesos de este esqueleto, \n yo que tu lo esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# b Enemigo Malbado brujo
-						elif linea[columna]== "b":
-							mensaje="Si hay un malo entre los malos ese es Malbado Brujo, \n yo que tu lo esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# G Enemigo Gargola
-						elif linea[columna]== "G":
-							mensaje="Esta Gárgola no tiene cara de buenos amigos..\n Yo que tu lo esquivaría.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						#Muebles
-						elif linea[columna]== "[" or linea[columna]== "]" or linea[columna]== "#":
-							mensaje="Parece que te has dado un golpe contra el mobiliario.\nCamina con cuidado guerrero.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna]!= "¥":
-							mensaje="Parece que te has dado un golpe contra estas viejas paredes.\nCamina con cuidado.\n"
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
-							
-							if linea[columna]== "¥":
-								linea=self.mapa_reto[i-2].strip() #Avanzamos una linea abajo
-								lista = list(linea)
-								lista[columna]='*'
-								linea= "".join(lista)
-								self.mapa_reto[i-2]=linea
-								posicion_donde_mueve=self.esta_en(i-2,columna)
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								self.muestra_mapa_explorado()
-							else: #CaMBIA DE PASILLO
-								lista = list(linea)
-								lista[columna]='*'
-								linea= "".join(lista)
-								self.mapa_reto[i-2]=linea
-								posicion_donde_mueve=self.esta_en(i-2,columna)
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								self.muestra_mapa_explorado()
-
-						sw=False
-						print('\n')
-						break
-			# -------------- mueve abajo ---------------------------
-					if linea[k]=='*' and movimiento=="down" and sw==True:				
-						fila	=i
-						columna	=k
-						posicion_donde_mueve=self.esta_en(i+1,columna)
-						lista = list(linea)
-						
-						lista[columna]= "■"
-						
-						linea= "".join(lista)
-						self.mapa_reto[i]=linea
-
-						linea=self.mapa_reto[i+1].strip() #Avanzamos una linea abajo
-						lista = list(linea)
-						
-						if lista[columna]=='■':
-							lista[columna]= "*"
-							linea= "".join(lista)
-							self.mapa_reto[i+1]=linea
-							self.muestra_mapa_explorado()
-						elif linea[columna]== "g":
-							print(Fore.YELLOW+"Este Goblin no tiene pinta de dejarte pasar..\nYo que tu lo esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-						# o Enemigo Orco
-						elif linea[columna]== "o":
-							print(Fore.YELLOW+"¿En serio te crees que un Orco va ha dejarte pasar..? \nYo que tu lo esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# f Enemigo Fimir
-						elif linea[columna]== "f":
-							print(Fore.YELLOW+"Los Firmir no son muy amistosos.. \nYo que tu lo esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# m Enemigo Momia
-						elif linea[columna]== "m":
-							print(Fore.YELLOW+"Con el vendaje de esa momia podrías curar muchas heridas pero, \nyo que tu la esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# e Enemigo Esqueleto
-						elif linea[columna]== "e":
-							print(Fore.YELLOW+"No te vas a colar entre los huesos de este esqueleto, \nyo que tu lo esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# b Enemigo Malbado brujo
-						elif linea[columna]== "b":
-							print(Fore.YELLOW+"Si hay un malo entre los malos ese es Malbado Brujo, \nyo que tu lo esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						# G Enemigo Gargola
-						elif linea[columna]== "G":
-							print(Fore.YELLOW+"Esta Gárgola no tiene cara de buenos amigos..\nYo que tu lo esquivaría.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-
-						#Muebles
-						elif linea[columna]== "[" or linea[columna]== "]" or linea[columna]== "#":
-							print(Fore.YELLOW+"Parece que te has dado un golpe contra el mobiliario.\nCamina con cuidado guerrero.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna]!= "¥":
-							print(Fore.YELLOW+"Parece que te has dado un golpe contra estas viejas paredes.\nCamina con cuidado.\n")
-							# No se podrá mover por tanto dejamos la linea como estaba, con el heroe en su posicion
-							linea=self.mapa_reto[i].strip()
-							lista = list(linea)
-							lista[columna]= "*"		
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-
-							break
-						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
-							
-							if linea[columna]== "¥":
-								linea=self.mapa_reto[i+2].strip() #Avanzamos una linea abajo
-								lista = list(linea)
-								lista[columna]='*'
-								linea= "".join(lista)
-								self.mapa_reto[i+2]=linea
-								posicion_donde_mueve=self.esta_en(i+2,columna)
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								self.muestra_mapa_explorado()
-							else: #CaMBIA DE PASILLO
-								lista = list(linea)
-								lista[columna]='*'
-								linea= "".join(lista)
-								self.mapa_reto[i+2]=linea
-								posicion_donde_mueve=self.esta_en(i+2,columna)
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								self.muestra_mapa_explorado()
-
-						sw=False
-						print('\n')
-						break
-						
-			# -------------- mueve izquierda ---------------------------
-					if linea[k]=='*' and movimiento=="left":
-						fila	=i
-						columna	=k
-						
-						posicion_donde_mueve=self.esta_en(fila,columna-2)
-
-						if linea[columna-2]== "■":
-							self.pos_hero=self.esta_en(fila,(columna-2))
-							lista = list(linea)
-							lista[columna-2]= "*"                        # Es +2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
-							lista[columna]= "■"
-												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-							self.muestra_mapa_explorado()
-							print('\n')
-							break
-						#aki poner elif si trampa o monstruo u mueble
-						# g Enemigo Goblin
-						elif linea[columna-2]== "g":
-							print(Fore.YELLOW+"Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n")
-							break
-						# o Enemigo Orco
-						elif linea[columna-2]== "o":
-							print(Fore.YELLOW+"¿En serio te crees que un Orco va ha dejarte pasar..? \n Yo que tu lo esquivaría.\n")
-							break
-
-						# f Enemigo Fimir
-						elif linea[columna-2]== "f":
-							print(Fore.YELLOW+"Los Firmir no son muy amistosos.. \n Yo que tu lo esquivaría.\n")
-							break
-
-						# m Enemigo Momia
-						elif linea[columna-2]== "m":
-							print(Fore.YELLOW+"Con el vendaje de esa momia podrías curar muchas heridas pero, \n yo que tu la esquivaría.\n")
-							break
-
-						# e Enemigo Esqueleto
-						elif linea[columna-2]== "e":
-							print(Fore.YELLOW+"No te vas a colar entre los huesos de este esqueleto, \n yo que tu lo esquivaría.\n")
-							break
-
-						# b Enemigo Malbado brujo
-						elif linea[columna-2]== "b":
-							print(Fore.YELLOW+"Si hay un malo entre los malos ese es Malbado Brujo, \n yo que tu lo esquivaría.\n")
-							break
-
-						# G Enemigo Gargola
-						elif linea[columna-2]== "G":
-							print(Fore.YELLOW+"Esta Gárgola no tiene cara de buenos amigos..\n Yo que tu lo esquivaría.\n")
-							break
-						#Muebles
-						elif linea[columna-2]== "[" or linea[columna-2]== "]" or linea[columna-2]== "#":
-							print(Fore.YELLOW+"Parece que te has dado un golpe contra el mobiliario.\n Camina con cuidado guerrero.\n")
-							break
-						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna-2]!= "¥":
-							print(Fore.YELLOW+"Parece que te has dado un golpe contra estas viejas paredes.\n Camina con cuidado.\n")
-							break
-						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
-														
-							if linea[columna-2]== "¥":
-								lista = list(linea)
-								self.pos_hero=self.esta_en(fila,(columna-4))
-								posicion_donde_mueve=self.esta_en(fila,columna-4) #Actualizamos donde mueve pues ha cruzado una puerta y aqui suma +4 para cruzarla
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								lista[columna-4]= "*" # Esto es para cruzar la puerta
-								lista[columna]="■"
-							else:
-								lista = list(linea)
-								self.pos_hero=self.esta_en(fila,(columna-2))
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								lista[columna]="■"
-								lista[columna-2]= "*"
-							
-							self.muestra_mapa_explorado()
-
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-							self.muestra_mapa_explorado()
-							print('\n')
-							break
-			# -------------- mueve derecha ---------------------------
-					elif linea[k]=='*' and movimiento=="right":
-						fila	=i
-						columna	=k
-						
-						posicion_donde_mueve=self.esta_en(fila,columna+2)
-
-						if linea[columna+2]== "■":
-							self.pos_hero=self.esta_en(fila,(columna+2))
-							lista = list(linea)
-							lista[columna+2]= "*"                        # Es +2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
-							lista[columna]= "■"
-												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-							self.muestra_mapa_explorado()
-							print('\n')
-							break
-						#aki poner elif si trampa o monstruo u mueble
-						# g Enemigo Goblin
-						elif linea[columna+2]== "g":
-							print(Fore.YELLOW+"Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n")
-							break
-						# o Enemigo Orco
-						elif linea[columna+2]== "o":
-							print(Fore.YELLOW+"¿En serio te crees que un Orco va ha dejarte pasar..? \n Yo que tu lo esquivaría.\n")
-							break
-
-						# f Enemigo Fimir
-						elif linea[columna+2]== "f":
-							print(Fore.YELLOW+"Los Firmir no son muy amistosos.. \n Yo que tu lo esquivaría.\n")
-							break
-
-						# m Enemigo Momia
-						elif linea[columna+2]== "m":
-							print(Fore.YELLOW+"Con el vendaje de esa momia podrías curar muchas heridas pero, \n yo que tu la esquivaría.\n")
-							break
-
-						# e Enemigo Esqueleto
-						elif linea[columna+2]== "e":
-							print(Fore.YELLOW+"No te vas a colar entre los huesos de este esqueleto, \n yo que tu lo esquivaría.\n")
-							break
-
-						# b Enemigo Malbado brujo
-						elif linea[columna+2]== "b":
-							print(Fore.YELLOW+"Si hay un malo entre los malos ese es Malbado Brujo, \n yo que tu lo esquivaría.\n")
-							break
-
-						# G Enemigo Gargola
-						elif linea[columna+2]== "G":
-							print(Fore.YELLOW+"Esta Gárgola no tiene cara de buenos amigos..\n Yo que tu lo esquivaría.\n")
-							break
-
-						#Muebles
-						elif linea[columna+2]== "[" or linea[columna+2]== "]" or linea[columna+2]== "#":
-							print(Fore.YELLOW+"Parece que te has dado un golpe contra el mobiliario.\n Camina con cuidado guerrero.\n")
-							break
-						elif posicion_donde_mueve["Tipo"]=="muro" and linea[columna+2]!= "¥":
-							print(Fore.YELLOW+"Parece que te has dado un golpe contra estas viejas paredes.\n Camina con cuidado.\n")
-							break
-						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
-														
-							if linea[columna+2]== "¥":
-								lista = list(linea)
-								self.pos_hero=self.esta_en(fila,(columna-4))
-								posicion_donde_mueve=self.esta_en(fila,columna+4) #Actualizamos donde mueve pues ha cruzado una puerta y aqui suma +4 para cruzarla
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								lista[columna+4]= "*" # Esto es para cruzar la puerta
-								lista[columna]="■"
-							else:
-								lista = list(linea)
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
-								self.pos_hero=self.esta_en(fila,(columna+2))
-								lista[columna]="■"
-								lista[columna+2]= "*"
-							
-							self.muestra_mapa_explorado()
-
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-							self.muestra_mapa_explorado()
-							print('\n')
-							break
-		return(mensaje)
-
 
 	def activa_exploracion(self,posicion_donde_mueve,lista):
 
+		print("Activa exploracion*****")
 		
 		if posicion_donde_mueve["Tipo"]== "habitacion23":
 			#((fila>=29 and fila<=32) & (columna>=114 and columna<=132))
@@ -881,6 +1058,26 @@ class Mapa():
 									lista_aux[k+1]="1"
 								linea= "".join(lista_aux)
 							self.mapa_reto[i]=linea
+		elif (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4):
+			#Columna=137
+			# Quitamos de la lectura la parte del texto inicial del reto.
+			for t in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[t].strip()
+				if linea=="fin_texto_reto": break
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(t+2,len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					
+					if linea[k].isdigit()== False:
+						if ((k>=134 and k<=136 and (i!=1 and i!=22)) or (k==136 and (i==1 or i==22))): #Si estamos en el pasillo mostramos el contenido hasta 134 por el muro
+							lista = list(linea)
+							if lista[k+1]=="0":
+								lista[k+1]="1"
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+							
 								
 		
 		#Debemos actualizar la linea actual del movimiento y devolversela aquien nos llama.

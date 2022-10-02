@@ -132,7 +132,7 @@ class Reto():
 			#-------------------------------------------------------
 			if opcion == 4 :
 				init()	
-				os.system("clear")
+#				os.system("clear")
 				print (Fore.WHITE+'\n Tira los dados.. \n')	
 				
 				tirada = random.randrange(2,12,1)
@@ -161,12 +161,14 @@ class Reto():
 						mensaje=mapa_reto.heroe_se_mueve("left")
 					if k==1077:  # Derecha
 						mensaje=mapa_reto.heroe_se_mueve("right")
+					else:print("")
 					movimiento+=1
 					
-					os.system("clear")
+					
+#					os.system("clear")
 					mapa_reto.muestra_mapa_explorado()
 					print(Fore.YELLOW+mensaje)
-		os.system("clear")
+#		os.system("clear")
 
 
 				
