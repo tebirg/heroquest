@@ -12,7 +12,7 @@ class Mapa():
 		mapa_reto=[]
 		self.pos_hero={'Tipo':'inicio','Horizontal':0,'Vertical':0}
 
-		fichero= open("mapas/"+self.nombre+".txt",'r')
+		fichero= open("mapas/"+self.nombre+"/"+self.nombre+".txt",'r')
 		self.mapa_reto=fichero.readlines()
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,15 +46,15 @@ class Mapa():
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------
 	def muestra_mapa_explorado(self):
 		init() #Para reiniciar colorama
-
+		#print(self.mapa_reto)
 		for t in range(len(self.mapa_reto)):
 			linea=self.mapa_reto[t].strip()
-			if linea=="fin_texto_reto": break
+			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
 
 		for i in range(t+2,len(self.mapa_reto)):
 
 			linea=self.mapa_reto[i].strip()
-			
+
 			for k in range(len(linea)):
 
 				if (linea[k].isdigit()== False and k<137 and linea[k]!='-' and linea[k]!='|') :
@@ -66,11 +66,11 @@ class Mapa():
 
 					# Pintamos los diferentes caracteres del mapa que estén visibles
 					if linea[k]=='■':
-						if int(linea[k+1])==1:
+						if int(linea[k+1])==1 :
 							print (Fore.BLUE+linea[k],end=salto)
 						else:
 							print(Fore.BLACK+" ",end=salto)
-							
+
 					elif linea[k]=='*':
 						if int(linea[k+1])==1:
 							print (Fore.YELLOW+linea[k],end=salto)
@@ -119,22 +119,28 @@ class Mapa():
 
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------
-	# Muestra la historia del mapa. El mapa ha de contener "fin_texto_reto" para sabe donde termina.
+	# Muestra la historia del mapa. El mapa ha de contener "fin_texto_notas" para sabe donde termina.
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	def muestra_historia(self):
 		init() #Para reiniciar colorama
 		print('\n')
-		for i in range(len(self.mapa_reto)):
-			linea=self.mapa_reto[i].strip()
-			if linea=="fin_texto_reto": break
-			print (Fore.YELLOW+"\t"+linea)
+
+		texto_reto= open("mapas/"+self.nombre+"/"+self.nombre+"_historia.txt",'r')
+		
+		for linea in texto_reto:
+			print(Fore.LIGHTYELLOW_EX+linea,end='')
+		
+#		for i in range(len(self.mapa_reto)):
+#			linea=self.mapa_reto[i].strip()
+#			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
+#			print (Fore.YELLOW+"\t"+linea)
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	# Esta funcion buscará cualquier objeto en el mapa que se encuentre a la vista del personaje.
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	def heroe_busca(self,objeto):
 	#El mapa ha de comenzar siempre en fila 11
-	
+
 		fila	=0 # Será la fila de retorno
 		columna	=0 #será la columna de retorno
 
@@ -154,11 +160,11 @@ class Mapa():
 		# Ç Trampa de roca caida
 		# º  trampa de abismo (ALT 176)
 		# > Trampa flechas
-		
+
 		# # Mobiliario
-		
+
 		# ® Tesoro
-		
+
 		# g Enemigo Goblin
 		# o Enemigo Orco
 		# f Enemigo Fimir
@@ -168,10 +174,10 @@ class Mapa():
 		# G Enemigo Gargola
 
 		# Quitamos de la lectura la parte del texto inicial del reto.
-		print("heroe busca.."+objeto)
+		#print("heroe busca.."+objeto)
 		for t in range(len(self.mapa_reto)):
 			linea=self.mapa_reto[t].strip()
-			if linea=="fin_texto_reto": break
+			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
 
 		# Comenzamos la lectura del mapa
 		for i in range(t+2,len(self.mapa_reto)):
@@ -211,33 +217,33 @@ class Mapa():
 	# Esta funcion buscará moverá al personaje
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	def heroe_se_mueve(self,movimiento):
-		print("heroe se mueve..")
+		#print("heroe se mueve..")
 		fila	=0 # Será la fila de retorno
 		columna	=0 #será la columna de retorno
 		sw=True
 		mensaje=''
 		self.heroe_busca("*") #Actualizamos la nueva posicion de nuestro heroe
 		posicion_actual = self.pos_hero
-						
+
 		# Quitamos de la lectura la parte del texto inicial del reto.
 		for t in range(len(self.mapa_reto)):
 			linea=self.mapa_reto[t].strip()
-			if linea=="fin_texto_reto": break
+			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
 
 		# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 		for i in range(t+2,len(self.mapa_reto)):
 
 			linea=self.mapa_reto[i].strip()
 
-		# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+		# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0
 			for k in range(len(linea)):
-				if linea[k].isdigit()== False:
+				if linea[k].isdigit()== False and sw==True:
 			# -------------- mueve arriba ---------------------------
-					
-					if linea[k]=='*' and movimiento=="up" and sw==True:				
+
+					if linea[k]=='*' and movimiento=="up" and sw==True:
 						fila	=i
 						columna	=k
-						
+
 						posicion_donde_mueve=self.esta_en(i-1,columna)
 						
 						lista = list(linea)
@@ -249,12 +255,17 @@ class Mapa():
 						linea=self.mapa_reto[i-1].strip() #Avanzamos una linea abajo
 						lista = list(linea)
 
-						if lista[columna]=='■' and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
-							lista[columna]= "*"
-							linea= "".join(lista)
-							self.mapa_reto[i-1]=linea
-#							self.muestra_mapa_explorado()
-							break
+						if lista[columna]=='■':
+							if(posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"] or ((posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec") and (posicion_actual["Vertical"]== posicion_donde_mueve["Vertical"] or posicion_actual["Horizontal"]== posicion_donde_mueve["Horizontal"]))):
+								lista[columna]= "*"
+								linea= "".join(lista)
+								self.mapa_reto[i-1]=linea
+								if (posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec"):
+									lista=self.activa_exploracion(posicion_donde_mueve,lista)								
+									self.muestra_mapa_explorado()
+
+								sw=False
+								break
 						
 						# Ç Trampa de roca caida
 						# º  trampa de abismo (ALT 176)
@@ -433,13 +444,17 @@ class Mapa():
 						linea=self.mapa_reto[i+1].strip() #Avanzamos una linea abajo
 						lista = list(linea)
 						
-						if lista[columna]=='■' and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
-							lista[columna]= "*"
-							linea= "".join(lista)
-							self.mapa_reto[i+1]=linea
-#							self.muestra_mapa_explorado()
-							sw=False
-							break
+						if lista[columna]=='■':
+							if(posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"] or ((posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec") and (posicion_actual["Vertical"]== posicion_donde_mueve["Vertical"] or posicion_actual["Horizontal"]== posicion_donde_mueve["Horizontal"]))) :
+								lista[columna]= "*"
+								linea= "".join(lista)
+								self.mapa_reto[i+1]=linea
+								if (posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec"):
+									lista=self.activa_exploracion(posicion_donde_mueve,lista)								
+									self.muestra_mapa_explorado()
+
+								sw=False
+								break
 						
 						# Ç Trampa de roca caida
 						# º  trampa de abismo (ALT 176)
@@ -626,23 +641,25 @@ class Mapa():
 						break
 						
 			# -------------- mueve izquierda ---------------------------
-					if linea[k]=='*' and movimiento=="left" and k>=2:
+					if linea[k]=='*' and movimiento=="left" and k>=2 and i>1 and sw==True:
 						fila	=i
 						columna	=k
 					
 						posicion_donde_mueve=self.esta_en(fila,columna-2)
 
-						if linea[columna-2]== "■" and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
-							self.pos_hero=self.esta_en(fila,(columna-2))
-							lista = list(linea)
-							lista[columna-2]= "*"                        # Es -2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
-							lista[columna]= "■"
+						if linea[columna-2]== "■":
+							if(posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"] or ((posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec") and (posicion_actual["Vertical"]== posicion_donde_mueve["Vertical"] or posicion_actual["Horizontal"]== posicion_donde_mueve["Horizontal"]))) :
+								self.pos_hero=self.esta_en(fila,(columna-2))
+								lista = list(linea)
+								lista[columna-2]= "*"                        # Es -2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
+								lista[columna]= "■"
 												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-#							self.muestra_mapa_explorado()
-							sw=False
-							break
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+#								self.muestra_mapa_explorado()
+								sw=False
+								break
+
 						# ^ Puerta secreta
 						# Ç Trampa de roca caida
 						# º  trampa de abismo (ALT 176)
@@ -661,13 +678,16 @@ class Mapa():
 								lista[columna]= "■"
 								linea= "".join(lista)
 								self.mapa_reto[i]=linea
-#								self.muestra_mapa_explorado()
+								if (posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec"):
+									lista=self.activa_exploracion(posicion_donde_mueve,lista)								
+									self.muestra_mapa_explorado()
+
 								sw=False
 								break
 		
 						# g Enemigo Goblin
 						elif linea[columna-2]== "g":
-							print(Fore.YELLOW+"Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n")
+							mensaje="Este Goblin no tiene pinta de dejarte pasar..\n Yo que tu lo esquivaría.\n"
 							sw=False
 							break
 						# o Enemigo Orco
@@ -741,30 +761,35 @@ class Mapa():
 								break
 							
 			# -------------- mueve derecha ---------------------------
-					elif linea[k]=='*' and movimiento=="right" and k<=135 :
+					elif linea[k]=='*' and movimiento=="right" and k<=135 and i<35 and sw==True:
 						fila	=i
 						columna	=k
 						
 						posicion_donde_mueve=self.esta_en(fila,columna+2)
 						lista = list(linea)
 						
-						if linea[columna+2]== "■" and posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"]:
-							self.pos_hero=self.esta_en(fila,(columna+2))
-							lista[columna+2]= "*"                        # Es +2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
-							lista[columna]= "■"
-							sw=False
+						if linea[columna+2]== "■":
+							if(posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"] or ((posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec") and (posicion_actual["Vertical"]== posicion_donde_mueve["Vertical"] or posicion_actual["Horizontal"]== posicion_donde_mueve["Horizontal"]))) :
+								self.pos_hero=self.esta_en(fila,(columna+2))
+								lista[columna+2]= "*"                        # Es +2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
+								lista[columna]= "■"
+								sw=False
 												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
-#							self.muestra_mapa_explorado()
-							print('\n')
-							break
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+								if (posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec"):
+									lista=self.activa_exploracion(posicion_donde_mueve,lista)								
+									self.muestra_mapa_explorado()
+								print('\n')
+								break
+
 						# ^ Puerta secreta
 						# Ç Trampa de roca caida
 						# º  trampa de abismo (ALT 176)
 						# > Trampa flechas
 						# ® Tesoro
 						elif lista[columna+2]=='®' or lista[columna+2]=='>' or lista[columna+2]=='º' or lista[columna+2]=='Ç' or lista[columna+2]=='^':
+							
 							if lista[columna + 3]== "2" :
 								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
 								sw=False
@@ -829,8 +854,9 @@ class Mapa():
 							mensaje="Parece que te has dado un golpe contra estas viejas paredes.\n Camina con cuidado.\n"
 							sw=False
 							break
-						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"]:
-							print("Entra en es distinto.."+str(columna))					
+						elif posicion_donde_mueve["Tipo"]!=posicion_actual["Tipo"] and sw==True:
+							
+							#print("Entra en es distinto.."+str(columna))					
 							if linea[columna+2]== "¥":
 								lista = list(linea)
 								self.pos_hero=self.esta_en(fila,(columna+4))
@@ -845,6 +871,7 @@ class Mapa():
 								break
 							else:
 								lista = list(linea)
+								
 								lista=self.activa_exploracion(posicion_donde_mueve,lista)
 								self.pos_hero=self.esta_en(fila,(columna+2))
 								lista[columna]="■"
@@ -879,7 +906,7 @@ class Mapa():
 
 
 		#situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':0}
-		print(Fore.WHITE+"Devolver posicion para fila:"+str(fila)+" y columna:"+str(columna))
+		#print(Fore.WHITE+"Devolver posicion para fila:"+str(fila)+" y columna:"+str(columna))
 
 		if fila==10  and columna==0 			:
 			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':1}	#interseccion
@@ -1009,14 +1036,14 @@ class Mapa():
 
 	def activa_exploracion(self,posicion_donde_mueve,lista):
 
-		print("Activa exploracion*****")
-		
+		#print("Activa exploracion*****")
+
 		if posicion_donde_mueve["Tipo"]== "habitacion23":
 			#((fila>=29 and fila<=32) & (columna>=114 and columna<=132))
 			# Quitamos de la lectura la parte del texto inicial del reto.
 			for t in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[t].strip()
-				if linea=="fin_texto_reto": break
+				if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 			for i in range(t+2,len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
@@ -1039,14 +1066,14 @@ class Mapa():
 			# Quitamos de la lectura la parte del texto inicial del reto.
 			for t in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[t].strip()
-				if linea=="fin_texto_reto": break
+				if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 			for i in range(t+2,len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
 			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
 				for k in range(len(linea)):
 					if linea[k].isdigit()== False:
-						if ((i==34 and (k>=0 and k<=137)) or (i==33 and((k>=2 and k<=58)or (k>=72 and k<=135)))): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
+						if (((i==34 and (k>=0 and k<=137)) or (i==33 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<35): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
 							if posicion_donde_mueve["Horizontal"]==i:
 								lista = list(linea)
 								if lista[k+1]=="0":
@@ -1063,7 +1090,7 @@ class Mapa():
 			# Quitamos de la lectura la parte del texto inicial del reto.
 			for t in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[t].strip()
-				if linea=="fin_texto_reto": break
+				if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 			for i in range(t+2,len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
@@ -1071,7 +1098,7 @@ class Mapa():
 				for k in range(len(linea)):
 					
 					if linea[k].isdigit()== False:
-						if ((k>=134 and k<=136 and (i!=1 and i!=22)) or (k==136 and (i==1 or i==22))): #Si estamos en el pasillo mostramos el contenido hasta 134 por el muro
+						if (((k>=134 and k<=136 and (i!=(t+2) and i!=22)) or (k==136 and (i==(t+2) or i==22))) and i<35): #Si estamos en el pasillo mostramos el contenido hasta 134 por el muro
 							lista = list(linea)
 							if lista[k+1]=="0":
 								lista[k+1]="1"
@@ -1079,7 +1106,7 @@ class Mapa():
 							self.mapa_reto[i]=linea
 							
 								
-		
+		#print("sale activa exploracion..")
 		#Debemos actualizar la linea actual del movimiento y devolversela aquien nos llama.
 		return(lista)
 										

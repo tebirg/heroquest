@@ -17,9 +17,9 @@ class Reto():
 		self.nombre_mapa =''
 				
 		if self.nro_reto==1:
-			self.nombre_mapa="La furia de Ragnar"
-		elif self.nro_reto==2:
-			self.nombre_mapa="El mal nos persigue"
+			self.nombre_mapa="la_furia_de_ragnar"
+#		elif self.nro_reto==2:                        # Agregar los mapas deseados
+#			self.nombre_mapa="El mal nos persigue"
 		
 	def iniciar_partida(self):
 
@@ -51,6 +51,7 @@ class Reto():
 			print (  "5. Atacar" )
 			print (  "6. Defenderte" )
 			print (  "7. Salvar partida" )
+			print (  "8. Texto de misión" )
 			print (  "99. Salir\n" )
 
 			while True:
@@ -70,7 +71,7 @@ class Reto():
 				if hay_puerta==True:
 					print (Fore.YELLOW+"\n Te apoyas por error en un candelabro y las rocas de la pared se abren como por arte de mágia.\n ¡Es un pasadizo secreto!")		
 				else:
-					print (Fore.YELLOW+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
+					print (Fore.WHITE+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
 					
 				print ('\n')
 				input(Fore.WHITE+"#>>") # Elusuario irá avanzando según desee
@@ -86,23 +87,23 @@ class Reto():
 				if hay_trampa==True:
 					print (Fore.YELLOW+"\n ¡Mira que eres astut@! \n Efectivamente había un abismo oculto que has salvado en un hábil movimiento.")
 				else:
-					print (Fore.YELLOW+"\n No hay ningún abismo por aquí.")
+					print (Fore.WHITE+"\n No hay ningún abismo por aquí.")
 
-				hay_trampa=False;
+				hay_trampa=False
 				hay_trampa = mapa_reto.heroe_busca('>')	#felchas
 				
 				if (hay_trampa==True):
 					print (Fore.YELLOW+"\n ¡Esos reflejos son admirables! \n Pisas una baldosa floja que activa una trampa de flechas, pero en un hábil\n movimiento logras esquivarlas.")
 				else:
-					print (Fore.YELLOW+"\n Te has librado pues no hay trampas de flechas  a la vista.")
+					print (Fore.WHITE+"\n Te has librado pues no hay trampas de flechas  a la vista.")
 				
-				hay_trampa=False;
+				hay_trampa=False
 				hay_trampa = mapa_reto.heroe_busca('Ç') #roca caida
 
 				if (hay_trampa==True):
 					print (Fore.YELLOW+"\n ¡El techo se derrumba! \n Por los pelos mi audaz guerrer@. Por esta vez solo ha sido un chichon y te salvas de una buena.")
 				else:
-					print (Fore.YELLOW+"\n El techo está en buen estado. Esta vez no te caerá ninguna roca en la cabeza..")
+					print (Fore.WHITE+"\n El techo está en buen estado. Esta vez no te caerá ninguna roca en la cabeza..")
 				
 				
 
@@ -121,7 +122,7 @@ class Reto():
 				if hay_tesoro==True:
 					print (Fore.YELLOW+"\n ¡Eres una persona con suerte! \n Buscando bajo un empolvado armario has encontrado un tesoro.\n")
 				else:
-					print (Fore.YELLOW+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
+					print (Fore.WHITE+"\n Tu búsqueda ha sido en vano. No has encontrado nada.")
 
 				print ('\n')
 				input(Fore.WHITE+"#>>") # Elusuario irá avanzando según desee
@@ -132,7 +133,7 @@ class Reto():
 			#-------------------------------------------------------
 			if opcion == 4 :
 				init()	
-#				os.system("clear")
+				os.system("clear")
 				print (Fore.WHITE+'\n Tira los dados.. \n')	
 				
 				tirada = random.randrange(2,12,1)
@@ -144,7 +145,7 @@ class Reto():
 				print (Fore.WHITE+' \/____/  \.  .\  / ')
 				print (Fore.WHITE+'           \.__.\/  ')
 				
-				print (Fore.YELLOW+"\n Has sacado un "+str(tirada)+'\n')
+				print (Fore.YELLOW+"\n Has sacado un "+str(tirada))
 				mapa_reto.muestra_mapa_explorado()
 				print (Fore.WHITE+"Toca "+str(tirada)+" veces el pad de flechas para moverte:")
 				
@@ -165,10 +166,19 @@ class Reto():
 					movimiento+=1
 					
 					
-#					os.system("clear")
+					os.system("clear")
 					mapa_reto.muestra_mapa_explorado()
 					print(Fore.YELLOW+mensaje)
-#		os.system("clear")
+			#---------------------------------------------------------------------
+			#                      Imprime por pantalla el texto de la mision 
+			#---------------------------------------------------------------------
+			if opcion == 8 :
+				init()	
+				os.system("clear")
+				mapa_reto.muestra_historia()
+
+
+		os.system("clear")
 
 
 				
