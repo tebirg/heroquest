@@ -28,7 +28,7 @@ print (Fore.RED+"|"+Fore.GREEN+ "   ██    ██    ██   ██   ██
 print (Fore.RED+"|"+Fore.YELLOW+"   ██    █▀    ███████   ██   ██ ▀████▀  ▀██████ ▄███████▀ ███████▄██████▀ ▄████▀  "+Fore.RED+"| ")
 #print (Fore.YELLOW+"|                                                                                   "+Fore.RED+"| ")
 print (Fore.RED+"-------------------------------------------------------------------------------------    ")
-print (Fore.YELLOW+"                              ©Esteban Rodriguez                                    "+Fore.RED+"| ")
+print (Fore.LIGHTRED_EX+"                              ©Esteban Rodriguez                                    "+Fore.RED+"| ")
 print (Fore.RED+"-------------------------------------------------------------------------------------    ")
 print ("\n")
 
