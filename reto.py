@@ -134,16 +134,16 @@ class Reto():
 			if opcion == 4 :
 				init()	
 				os.system("clear")
-				print (Fore.WHITE+'\n Tira los dados.. \n')	
+				print (Fore.WHITE+'Has tirado los dados.. \n')	
 				
 				tirada = random.randrange(2,12,1)
 				
-				print (Fore.WHITE+'  _____             ')
-				print (Fore.WHITE+' /\ .  \    _____   ')
-				print (Fore.WHITE+'/. \____\  / .  /\  ')
-				print (Fore.WHITE+'\. / .  / /____/..\ ')
-				print (Fore.WHITE+' \/____/  \.  .\  / ')
-				print (Fore.WHITE+'           \.__.\/  ')
+				print (Fore.WHITE+ '  _____             ')
+				print (Fore.YELLOW+' /\ .  \    _____   ')
+				print (Fore.WHITE+ '/. \____\  / .  /\  ')
+				print (Fore.YELLOW+'\. / .  / /____/..\ ')
+				print (Fore.WHITE+ ' \/____/  \.  .\  / ')
+				print (Fore.YELLOW+'           \.__.\/  ')
 				
 				print (Fore.YELLOW+"\n Has sacado un "+str(tirada))
 				mapa_reto.muestra_mapa_explorado()

@@ -1,0 +1,46 @@
+
+		 ■ Pasillo 
+
+		 ^ Puerta secreta
+
+		 ¥ Puerta
+
+		 ║ Pared Lateral 
+
+		 ═ Pared Horizontal
+
+		 ╩ Pared esquina1 
+
+		 ╝ Pared esquina2 
+
+		 ╚ Pared esquina3 
+
+		 ╦ Pared esquina4 
+
+		 ╣ Pared esquina5 
+
+		 ╠ Pared esquina6 
+
+		 Ç Trampa de roca caida
+
+		 º  trampa de abismo
+
+		 > Trampa flechas
+
+		 # Mobiliario
+
+		 ® Tesoro
+
+		 g Enemigo Goblin
+
+		 o Enemigo Orco
+
+		 f Enemigo Fimir
+
+		 m Enemigo Momia
+
+		 e Enemigo Esqueleto
+
+		 b Enemigo Malbado brujo
+
+		 G Enemigo Gargola

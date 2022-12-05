@@ -2,6 +2,7 @@
 #Aqui se encontrarán las funciones de apertura de partidas, guardado de partidas y todo lo referente a cosas genéricas del juego
 from colorama import init, Fore, Back
 from reto import Reto
+from mapa import Mapa
 import os
 
 os.system("clear")
@@ -51,9 +52,30 @@ while True:
 		print ("\n Opción no válida\n")
 
 if opcion==1:
-	print (Fore.WHITE+"Manual de usuario Heroquest")
-	print (Fore.WHITE+"---------------------------") 
-	print ("\n")
+	while opcion!=3:
+		os.system("clear")
+		print (Fore.WHITE+"Manual de usuario Heroquest")
+		print (Fore.WHITE+"---------------------------") 
+		print (Fore.WHITE+" 1 . Simbología en el mapa ")
+		print (Fore.WHITE+" 2 . Imprimir el mapa base ") 
+		print (Fore.WHITE+" 3 . Volver a menú principal") 
+
+		while True:
+			try:
+				opcion = int(input(Fore.WHITE+"#>>"))
+				break
+			except ValueError:
+				print ("\n Opción no válida\n")
+
+		if opcion==2:
+			_mapa_ayuda=Mapa("vacio")
+			_mapa_ayuda.dibujar_mapa_base()
+			intro = str(input(Fore.WHITE+"#>>"))
+		elif opcion==1:
+			texto_ayuda= open("ayuda/simbologia.txt",'r')
+			for linea in texto_ayuda:
+				print(Fore.LIGHTYELLOW_EX+linea,end='')
+			intro = str(input(Fore.WHITE+"#>>"))
 	
 elif opcion==2:
 	print ("Aun no programado cho..")
@@ -65,7 +87,6 @@ elif opcion==3:
 	print (" Elige uno de los retos  ")
 	print ("_________________________")
 	print ("  1 . La furia de Ragnar ")
-#	print ("  2 . El mal nos persigue") Añadir los mapas deseados
 	print ("\n")
 	opcion = int(input("#>>"))
 	

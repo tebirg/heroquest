@@ -19,21 +19,20 @@ class Mapa():
 	# Dibuja el mapa base, util para la ayuda inicial
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------
 	def dibujar_mapa_base(self):
-		print ("Imprimiendo mapa",self.nombre)
-		print ("____________________________")
-
 		init() #Para reiniciar colorama
 
 		for i in range(len(self.mapa_reto)):
 			linea=self.mapa_reto[i].strip()
+
 			for k in range(len(linea)):
-				if k==68:
+				if k==136:
 					salto="\n"
 				else:
 					salto=""
 
 				if linea[k]=='■':
 					print (Fore.BLUE+linea[k], end=salto)
+				elif linea[k].isnumeric()==True: pass
 				else:
 					print (Fore.RED+linea[k], end=salto)
 
@@ -47,11 +46,9 @@ class Mapa():
 	def muestra_mapa_explorado(self):
 		init() #Para reiniciar colorama
 		#print(self.mapa_reto)
-		for t in range(len(self.mapa_reto)):
-			linea=self.mapa_reto[t].strip()
-			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
+		print('\n\n')
 
-		for i in range(t+2,len(self.mapa_reto)):
+		for i in range(len(self.mapa_reto)):
 
 			linea=self.mapa_reto[i].strip()
 
@@ -130,10 +127,6 @@ class Mapa():
 		for linea in texto_reto:
 			print(Fore.LIGHTYELLOW_EX+linea,end='')
 		
-#		for i in range(len(self.mapa_reto)):
-#			linea=self.mapa_reto[i].strip()
-#			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
-#			print (Fore.YELLOW+"\t"+linea)
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	# Esta funcion buscará cualquier objeto en el mapa que se encuentre a la vista del personaje.
@@ -144,21 +137,21 @@ class Mapa():
 		fila	=0 # Será la fila de retorno
 		columna	=0 #será la columna de retorno
 
-		# ■ Pasillo (Alt 220)
+		# ■ Pasillo 
 		# ^ Puerta secreta
 		# ¥ Puerta
 
-		# ║ Pared Lateral (Alt 186)
-		# ═ Pared Horizontal (Alt 205)
-		# ╩ Pared esquina1 (Alt 202)
-		# ╝ Pared esquina2 (Alt 188)
-		# ╚ Pared esquina3 (Alt 200)
-		# ╦ Pared esquina4 (Alt 203)
-		# ╣ Pared esquina5 (Alt 185)
-		# ╠ Pared esquina6 (Alt 204)
+		# ║ Pared Lateral 
+		# ═ Pared Horizontal
+		# ╩ Pared esquina1 
+		# ╝ Pared esquina2 
+		# ╚ Pared esquina3 
+		# ╦ Pared esquina4 
+		# ╣ Pared esquina5 
+		# ╠ Pared esquina6 
 
 		# Ç Trampa de roca caida
-		# º  trampa de abismo (ALT 176)
+		# º  trampa de abismo
 		# > Trampa flechas
 
 		# # Mobiliario
@@ -173,14 +166,8 @@ class Mapa():
 		# b Enemigo Malbado brujo
 		# G Enemigo Gargola
 
-		# Quitamos de la lectura la parte del texto inicial del reto.
-		#print("heroe busca.."+objeto)
-		for t in range(len(self.mapa_reto)):
-			linea=self.mapa_reto[t].strip()
-			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
-
 		# Comenzamos la lectura del mapa
-		for i in range(t+2,len(self.mapa_reto)):
+		for i in range(len(self.mapa_reto)):
 
 			linea=self.mapa_reto[i].strip()
 
@@ -225,13 +212,8 @@ class Mapa():
 		self.heroe_busca("*") #Actualizamos la nueva posicion de nuestro heroe
 		posicion_actual = self.pos_hero
 
-		# Quitamos de la lectura la parte del texto inicial del reto.
-		for t in range(len(self.mapa_reto)):
-			linea=self.mapa_reto[t].strip()
-			if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
-
 		# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
-		for i in range(t+2,len(self.mapa_reto)):
+		for i in range(len(self.mapa_reto)):
 
 			linea=self.mapa_reto[i].strip()
 
@@ -429,7 +411,9 @@ class Mapa():
 						sw=False
 						print('\n')
 						break
-			# -------------- mueve abajo ---------------------------
+			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 					if linea[k]=='*' and movimiento=="down" and sw==True:				
 						fila	=i
 						columna	=k
@@ -656,7 +640,10 @@ class Mapa():
 												     # Tenemos la anterior posición y la nueva del heroe. Haremos diversas comprobaciones
 								linea= "".join(lista)
 								self.mapa_reto[i]=linea
-#								self.muestra_mapa_explorado()
+								if (posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec"):
+									lista=self.activa_exploracion(posicion_donde_mueve,lista)								
+									self.muestra_mapa_explorado()
+								print('\n')
 								sw=False
 								break
 
@@ -908,65 +895,65 @@ class Mapa():
 		#situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':0}
 		#print(Fore.WHITE+"Devolver posicion para fila:"+str(fila)+" y columna:"+str(columna))
 
-		if fila==10  and columna==0 			:
-			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':1}	#interseccion
-		elif fila==10  and columna==136 			:
+		if fila==0  and columna==0 			:
+			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':1}		#interseccion
+		elif fila==0  and columna==136 			:
 			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':4} 	#interseccion
-		elif fila==23 and columna==0 			:
+		elif fila==12 and columna==0 			:
 			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':1}	#interseccion
-		elif fila==23 and columna==136 			:
+		elif fila==12 and columna==136 			:
 			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':4}	#interseccion
-		elif fila==23 and columna==48 			:
+		elif fila==12 and columna==48 			:
 			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':2}	#interseccion
-		elif fila==19  and columna==48 			:
-			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':2}	#interseccion
-		elif fila==19  and columna==86 			:
-			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':3}	#interseccion
-		elif fila==23 and columna==86 			:
+		elif fila==12 and columna==86 			:
 			situacion = {'Tipo':'intersec','Horizontal':10,'Vertical':3}	#interseccion
-		elif fila==28 and columna==48 			:
+		elif fila==8  and columna==48 			:
+			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':2}		#interseccion
+		elif fila==8  and columna==86 			:
+			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':3}		#interseccion
+		elif fila==17 and columna==48 			:
 			situacion = {'Tipo':'intersec','Horizontal':11,'Vertical':2}	#interseccion
-		elif fila==28 and columna==86 			:
+		elif fila==17 and columna==86 			:
 			situacion = {'Tipo':'intersec','Horizontal':11,'Vertical':3}	#interseccion
-		elif fila==34 and columna==0 			:
+		elif fila==24 and columna==0 			:
 			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':1}	#interseccion
-		elif fila==34 and columna==136 			:
+		elif fila==24 and columna==136 			:
 			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':4}	#interseccion
-		elif fila==10					:
+		elif fila==0					:
 			situacion = {'Tipo':'pasillo','Horizontal':1,'Vertical':0}
-		elif fila==12  and (columna>=60 and columna<=70)	:
+		elif fila==1  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':2,'Vertical':0}
-		elif fila==13  and (columna>=60 and columna<=70)	:
+		elif fila==2  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':3,'Vertical':0}
-		elif fila==14  and (columna>=60 and columna<=70)	:
+		elif fila==3  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':4,'Vertical':0}
-		elif fila==15  and (columna>=60 and columna<=70)	:
+		elif fila==4  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':5,'Vertical':0}
-		elif fila==16  and (columna>=60 and columna<=70)	:
+		elif fila==5  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':6,'Vertical':0}
-		elif fila==17  and (columna>=60 and columna<=70)	:
+		elif fila==6  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':7,'Vertical':0}
-		elif fila==18  and (columna>=60 and columna<=70)	:
+		elif fila==7  and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':8,'Vertical':0}
-		elif fila==19  and (columna>=50 and columna<=84)	:
+		elif fila==8  and (columna>=50 and columna<=84)	:
 			situacion = {'Tipo':'pasillo','Horizontal':9,'Vertical':0}
-		elif fila==23 and (columna>=2  and columna<=46)	:
+		elif fila==12 and ((columna>=2  and columna<=46) or (columna>=87  and columna<=134))	:
 			situacion = {'Tipo':'pasillo','Horizontal':10,'Vertical':0}
-		elif fila==27 and (columna>=50 and columna<=84)	:
+		elif fila==17 and (columna>=50 and columna<=84)	:
 			situacion = {'Tipo':'pasillo','Horizontal':11,'Vertical':0}
-		elif fila==28 and (columna>=60 and columna<=70)	:
+		elif fila==18 and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':12,'Vertical':0}
-		elif fila==29 and (columna>=60 and columna<=70)	:
+		elif fila==19 and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':13,'Vertical':0}
-		elif fila==30 and (columna>=60 and columna<=70)	:
+		elif fila==20 and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':14,'Vertical':0}
-		elif fila==31 and (columna>=60 and columna<=70)	:
+		elif fila==21 and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':15,'Vertical':0}
-		elif fila==32 and (columna>=60 and columna<=70)	:
+		elif fila==22 and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':16,'Vertical':0}
-		elif fila==33 and (columna>=60 and columna<=70)	:
+		elif fila==23 and (columna>=60 and columna<=70)	:
 			situacion = {'Tipo':'pasillo','Horizontal':17,'Vertical':0}
-		elif fila==34 					:
+		elif fila==24 					:
 			situacion = {'Tipo':'pasillo','Horizontal':18,'Vertical':0}
 		elif columna==0 					:
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':1}
@@ -974,59 +961,59 @@ class Mapa():
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':2}
 		elif columna==86 					:
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':3}
-		elif columna==136 					:
+		elif columna==136 and fila!=35 					:
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':4}
 
 		#----------------------- habitaciones superiores -----------------------------
-		elif ((fila>=12 and fila<=15) & (columna>=4 and columna<=20)):
+		elif ((fila>=2 and fila<=5) & (columna>=4 and columna<=20)):
 			situacion = {'Tipo':'habitacion1','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=12 and fila<=15) & (columna>=26 and columna<=44)):
+		elif ((fila>=2 and fila<=5) & (columna>=26 and columna<=44)):
 			situacion = {'Tipo':'habitacion2','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=12 and fila<=16) & (columna>=46 and columna<=56)):
+		elif ((fila>=2 and fila<=6) & (columna>=46 and columna<=56)):
 			situacion = {'Tipo':'habitacion3','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=12 and fila<=16) & (columna>=74 and columna<=86)):
+		elif ((fila>=2 and fila<=6) & (columna>=74 and columna<=86)):
 			situacion = {'Tipo':'habitacion4','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=12 and fila<=16) & (columna>=90 and columna<=100)):
+		elif ((fila>=2 and fila<=6) & (columna>=90 and columna<=100)):
 			situacion = {'Tipo':'habitacion5','Horizontal':fila,'Vertical':columna}			
-		elif ((fila>=12 and fila<=15) & (columna>=104 and columna<=132)):
+		elif ((fila>=2 and fila<=5) & (columna>=104 and columna<=132)):
 			situacion = {'Tipo':'habitacion6','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=17 and fila<=20) & (columna>=4 and columna<=20)):
+		elif ((fila>=7 and fila<=10) & (columna>=4 and columna<=20)):
 			situacion = {'Tipo':'habitacion7','Horizontal':fila,'Vertical':columna}	
-		elif (((fila>=18 and fila<=20) & (columna>=26 and columna<=44))or (fila==17 and(columna>=27 and columna<=43))):
+		elif (((fila>=8 and fila<=10) & (columna>=26 and columna<=44))or (fila==7 and(columna>=27 and columna<=43))):
 			situacion = {'Tipo':'habitacion8','Horizontal':fila,'Vertical':columna}		
-		elif ((fila>=18 and fila<=20) & (columna>=90 and columna<=98)):
+		elif ((fila>=8 and fila<=10) & (columna>=90 and columna<=98)):
 			situacion = {'Tipo':'habitacion9','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=18 and fila<=20) & (columna>=102 and columna<=110)):
+		elif ((fila>=8 and fila<=10) & (columna>=102 and columna<=110)):
 			situacion = {'Tipo':'habitacion10','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=17 and fila<=20) & (columna>=114 and columna<=122)):
+		elif ((fila>=7 and fila<=10) & (columna>=114 and columna<=122)):
 			situacion = {'Tipo':'habitacion11','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=17 and fila<=20) & (columna>=126 and columna<=132)):
+		elif ((fila>=7 and fila<=10) & (columna>=126 and columna<=132)):
 			situacion = {'Tipo':'habitacion12','Horizontal':fila,'Vertical':columna}
 			
 		# --------- habitacion central -------------------------------------------------
-		elif ((fila>=20 and fila<=25) & (columna>=52 and columna<=82)):
+		elif ((fila>=10 and fila<=15) & (columna>=52 and columna<=82)):
 			situacion = {'Tipo':'habitacion13','Horizontal':fila,'Vertical':columna}
 			
 		#----------------------- habitaciones inferiores -----------------------------		
-		elif ((fila>=24 and fila<=27) & (columna>=4 and columna<=20)):
+		elif ((fila>=14 and fila<=17) & (columna>=4 and columna<=20)):
 			situacion = {'Tipo':'habitacion14','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=24 and fila<=27) & (columna>=24 and columna<=44)):
+		elif ((fila>=14 and fila<=17) & (columna>=24 and columna<=44)):
 			situacion = {'Tipo':'habitacion15','Horizontal':fila,'Vertical':columna}		
-		elif ((fila>=24 and fila<=28) & (columna>=90 and columna<=100)):
+		elif ((fila>=14 and fila<=18) & (columna>=90 and columna<=100)):
 			situacion = {'Tipo':'habitacion16','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=24 and fila<=28) & (columna>=104 and columna<=132)):
+		elif ((fila>=14 and fila<=18) & (columna>=104 and columna<=132)):
 			situacion = {'Tipo':'habitacion17','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=29 and fila<=32) & (columna>=4 and columna<=20)):
+		elif ((fila>=19 and fila<=22) & (columna>=4 and columna<=20)):
 			situacion = {'Tipo':'habitacion18','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=29 and fila<=32) & (columna>=24 and columna<=44)):
+		elif ((fila>=19 and fila<=22) & (columna>=24 and columna<=44)):
 			situacion = {'Tipo':'habitacion19','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=29 and fila<=32) & (columna>=28 and columna<=56)):
+		elif ((fila>=19 and fila<=22) & (columna>=28 and columna<=56)):
 			situacion = {'Tipo':'habitacion20','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=29 and fila<=32) & (columna>=74 and columna<=86)):
+		elif ((fila>=19 and fila<=22) & (columna>=74 and columna<=86)):
 			situacion = {'Tipo':'habitacion21','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=30 and fila<=32) & (columna>=90 and columna<=110)):
+		elif ((fila>=20 and fila<=22) & (columna>=90 and columna<=110)):
 			situacion = {'Tipo':'habitacion22','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=30 and fila<=32) & (columna>=114 and columna<=132)):
+		elif ((fila>=20 and fila<=22) & (columna>=114 and columna<=132)):
 			situacion = {'Tipo':'habitacion23','Horizontal':fila,'Vertical':columna}
 		else:
 			situacion = {'Tipo':'muro','Horizontal':fila,'Vertical':columna}
@@ -1039,18 +1026,14 @@ class Mapa():
 		#print("Activa exploracion*****")
 
 		if posicion_donde_mueve["Tipo"]== "habitacion23":
-			#((fila>=29 and fila<=32) & (columna>=114 and columna<=132))
-			# Quitamos de la lectura la parte del texto inicial del reto.
-			for t in range(len(self.mapa_reto)):
-				linea=self.mapa_reto[t].strip()
-				if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
+			
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
-			for i in range(t+2,len(self.mapa_reto)):
+			for i in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
 			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
 				for k in range(len(linea)):
 					if linea[k].isdigit()== False:
-						if ((i>=29 and i<=33) & (k>=114 and k<=134)): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
+						if ((i>=19 and i<=23) & (k>=114 and k<=134)): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
 							if posicion_donde_mueve["Horizontal"]==i:
 								lista = list(linea)
 								lista[k+1]="1"
@@ -1061,19 +1044,16 @@ class Mapa():
 								linea= "".join(lista_aux)
 								
 							self.mapa_reto[i]=linea
+
 		elif (posicion_donde_mueve["Tipo"]=="pasillo" and  posicion_donde_mueve["Horizontal"]==18 and posicion_donde_mueve["Vertical"]==0):
-			#fila==35
-			# Quitamos de la lectura la parte del texto inicial del reto.
-			for t in range(len(self.mapa_reto)):
-				linea=self.mapa_reto[t].strip()
-				if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
+			
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
-			for i in range(t+2,len(self.mapa_reto)):
+			for i in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
 			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
 				for k in range(len(linea)):
 					if linea[k].isdigit()== False:
-						if (((i==34 and (k>=0 and k<=137)) or (i==33 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<35): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
+						if (((i==24 and (k>=0 and k<=137)) or (i==23 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<25): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
 							if posicion_donde_mueve["Horizontal"]==i:
 								lista = list(linea)
 								if lista[k+1]=="0":
@@ -1085,20 +1065,47 @@ class Mapa():
 									lista_aux[k+1]="1"
 								linea= "".join(lista_aux)
 							self.mapa_reto[i]=linea
-		elif (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4):
-			#Columna=137
-			# Quitamos de la lectura la parte del texto inicial del reto.
-			for t in range(len(self.mapa_reto)):
-				linea=self.mapa_reto[t].strip()
-				if linea=="Fin_texto_notas" or linea=="fin_texto_notas": break
+
+		elif (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]!=10):
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
-			for i in range(t+2,len(self.mapa_reto)):
+			for i in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
 			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
 				for k in range(len(linea)):
 					
 					if linea[k].isdigit()== False:
-						if (((k>=134 and k<=136 and (i!=(t+2) and i!=22)) or (k==136 and (i==(t+2) or i==22))) and i<35): #Si estamos en el pasillo mostramos el contenido hasta 134 por el muro
+						if (((k>=134 and k<=136 and (i!=(i+2) and i!=12)) or (k==136 and (i==(i+2) or i==12))) and i<25): #Si estamos en el pasillo mostramos el contenido hasta 134 por el muro
+							lista = list(linea)
+							if lista[k+1]=="0":
+								lista[k+1]="1"
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+
+		# Interseccion del pasillo central ojo porque hay que mostrar tambien el vertical 4, es decir, dos pasillos					
+		elif (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]==10):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					
+					if linea[k].isdigit()== False:
+						if ((k>=88 and k<=136 and i>=11 and i<=13) or (k>=84 and k<=86 and i==12) or ((((k>=134 and k<=136 and (i!=(i+2) and i!=12)) or (k==136 and (i==(i+2) or i==12))) and i<25))) :
+							lista = list(linea)
+							if lista[k+1]=="0":
+								lista[k+1]="1"
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea
+
+		elif (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==3 and posicion_donde_mueve["Horizontal"]==10):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					
+					if linea[k].isdigit()== False:
+						if ( (k>=84 and k<=88 and i>8 and i<17) or (k>=86 and k<=88 and (i==7 or i==8 or i==17 or i==18)) or ((k>=84 and k<=136 and i>=11 and i<=13))):
 							lista = list(linea)
 							if lista[k+1]=="0":
 								lista[k+1]="1"
