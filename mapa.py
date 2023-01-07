@@ -1,6 +1,6 @@
 #importamos clase colorama para poder tener colores por consola
 #Esta clase realizará busquedas en el mapa y todo lo referente a este.
-'''La calse mapa se encarga de las búsquedas de objetos y personajes, de los movimientos en dicho mapa etc. '''
+"""La calse mapa se encarga de las búsquedas de objetos y personajes, de los movimientos en dicho mapa etc. """
 from colorama import init, Fore, Back
 
 class Mapa():
@@ -627,7 +627,7 @@ class Mapa():
 						
 			# -------------- mueve izquierda ---------------------------
 #					if linea[k]=='*' and movimiento=="left" and k>=2 and i>0 and sw==True:
-					if linea[k]=='*' and movimiento=="left" and sw==True:
+					if linea[k]=='*' and movimiento=="left" and k>0 and sw==True:
 						fila	=i
 						columna	=k
 					
@@ -913,6 +913,8 @@ class Mapa():
 			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':2}		#interseccion
 		elif fila==8  and columna==86 			:
 			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':3}		#interseccion
+		elif fila==8  and columna>=50 and columna<=84 			:
+			situacion = {'Tipo':'intersec','Horizontal':9,'Vertical':0}		#interseccion passllo superior a hab central
 		elif fila==17 and columna==48 			:
 			situacion = {'Tipo':'intersec','Horizontal':11,'Vertical':2}	#interseccion
 		elif fila==17 and columna==86 			:
@@ -921,6 +923,8 @@ class Mapa():
 			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':1}	#interseccion
 		elif fila==24 and columna==136 			:
 			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':4}	#interseccion
+		elif fila==0 and (columna==60 or columna==70)			:
+			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':0}		#interseccion pasillo central superior
 		elif fila==0					:
 			situacion = {'Tipo':'pasillo','Horizontal':1,'Vertical':0}
 		elif fila==1  and (columna>=60 and columna<=70)	:
@@ -1122,11 +1126,48 @@ class Mapa():
 					
 					if linea[k].isdigit()== False:
 						if ((i>=0 and i<=1) or (i==1 and k not in(0,136,60,62,64,66,68,70) and k<=136) ):
-							lista = list(linea)
-							if lista[k+1]=="0":
-								lista[k+1]="1"
-							linea= "".join(lista)
-							self.mapa_reto[i]=linea
+							if i==1 and k in(0,60,62,64,66,68,70): pass
+							else:
+								lista = list(linea)
+								if lista[k+1]=="0":
+									lista[k+1]="1"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+		#Pasillo central superior
+		elif(posicion_donde_mueve["Tipo"]=="intersec" and  posicion_donde_mueve["Vertical"]==0 and posicion_donde_mueve["Horizontal"]==1):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)-1):
+					
+					if linea[k].isdigit()== False:
+						if i>=1 and i<=9 and k>=58 and k<=72 :
+							if (k==58 or k==72) and (i>=8 or i==0):pass
+							else:
+								lista = list(linea)
+								if lista[k+1]=="0":
+									lista[k+1]="1"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
+		#Pasillo horizontal encima de la habitacion central
+		elif(posicion_donde_mueve["Tipo"]=="intersec" and  posicion_donde_mueve["Vertical"]==0 and posicion_donde_mueve["Horizontal"]==9):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)-1):
+					
+					if linea[k].isdigit()== False:
+						if i>=7 and i<=9 and k>=46 and k<=88 :
+							if (k==48 or k==86) and (i==9):pass
+							elif (k>=60 and k<=70) and (i==7):pass
+							else:
+								lista = list(linea)
+								if lista[k+1]=="0":
+									lista[k+1]="1"
+								linea= "".join(lista)
+								self.mapa_reto[i]=linea
 							
 								
 		#print("sale activa exploracion..")
