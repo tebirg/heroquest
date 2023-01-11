@@ -1,5 +1,5 @@
 #importamos clase colorama para poder tener colores por consola
-#Esta clase llevará el control del juego
+"""Esta clase llevará el control del juego"""
 from colorama import init, Fore, Back
 from mapa import Mapa
 import random
@@ -75,6 +75,7 @@ class Reto():
 					
 				print ('\n')
 				input(Fore.WHITE+"#>>") # Elusuario irá avanzando según desee
+				os.system("clear")
 				mapa_reto.muestra_mapa_explorado()			
 				
 			#-------------------------------------------------------
@@ -109,6 +110,7 @@ class Reto():
 
 				print ('\n')
 				input(Fore.WHITE+"#>>") # Elusuario irá avanzando según desee
+				os.system("clear")
 				mapa_reto.muestra_mapa_explorado()
 
 			#-------------------------------------------------------
@@ -126,6 +128,7 @@ class Reto():
 
 				print ('\n')
 				input(Fore.WHITE+"#>>") # Elusuario irá avanzando según desee
+				os.system("clear")
 				mapa_reto.muestra_mapa_explorado()
 				
 			#-------------------------------------------------------
@@ -136,7 +139,8 @@ class Reto():
 				os.system("clear")
 				print (Fore.WHITE+'Has tirado los dados.. \n')	
 				
-				tirada = random.randrange(2,12,1)
+				#tirada = random.randrange(2,12,1)
+				tirada=20
 				
 				print (Fore.WHITE+ '  _____             ')
 				print (Fore.YELLOW+' /\ .  \    _____   ')
@@ -146,6 +150,8 @@ class Reto():
 				print (Fore.YELLOW+'           \.__.\/  ')
 				
 				print (Fore.YELLOW+"\n Has sacado un "+str(tirada))
+				input(Fore.WHITE+"#>>") # El usuario irá avanzando según desee
+				os.system("clear")
 				mapa_reto.muestra_mapa_explorado()
 				print (Fore.WHITE+"Toca "+str(tirada)+" veces el pad de flechas para moverte:")
 				

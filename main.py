@@ -1,5 +1,6 @@
 #Inicio del juego
 #Aqui se encontrarán las funciones de apertura de partidas, guardado de partidas y todo lo referente a cosas genéricas del juego
+"""Esta es la clase inicial. Aqui salen los menús de elección de usuario e historia a jugar. """
 from colorama import init, Fore, Back
 from reto import Reto
 from mapa import Mapa
