@@ -140,7 +140,7 @@ class Reto():
 				print (Fore.WHITE+'Has tirado los dados.. \n')	
 				
 				#tirada = random.randrange(2,12,1)
-				tirada=20
+				tirada=500
 				
 				print (Fore.WHITE+ '  _____             ')
 				print (Fore.YELLOW+' /\ .  \    _____   ')

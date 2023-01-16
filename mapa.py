@@ -972,7 +972,7 @@ class Mapa():
 			situacion = {'Tipo':'pasillo','Horizontal':18,'Vertical':0}
 		elif columna==0 					:
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':1}
-		elif columna==48 					:
+		elif columna==48 and (fila>= 8 and fila<=17)					:
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':2}
 		elif columna==86 and (fila not in(18,23,7,1,2,3,4,5,6,19,20,21,22) )					:
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':3}
@@ -980,21 +980,21 @@ class Mapa():
 			situacion = {'Tipo':'pasillo','Horizontal':0,'Vertical':4}
 
 		#----------------------- habitaciones superiores -----------------------------
-		elif ((fila>=2 and fila<=5) & (columna>=4 and columna<=20)):
+		elif ((fila>=2 and fila<=5) & (columna>=4 and columna<=22)):
 			situacion = {'Tipo':'habitacion1','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=2 and fila<=5) & (columna>=26 and columna<=44)):
+		elif ((fila>=2 and fila<=5) & (columna>=26 and columna<=43)):
 			situacion = {'Tipo':'habitacion2','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=2 and fila<=6) & (columna>=46 and columna<=56)):
 			situacion = {'Tipo':'habitacion3','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=2 and fila<=6) & (columna>=74 and columna<=86)):
 			situacion = {'Tipo':'habitacion4','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=2 and fila<=6) & (columna>=90 and columna<=100)):
+		elif ((fila>=2 and fila<=6) & (columna>=90 and columna<=110)):
 			situacion = {'Tipo':'habitacion5','Horizontal':fila,'Vertical':columna}			
 		elif ((fila>=2 and fila<=5) & (columna>=114 and columna<=132)):
 			situacion = {'Tipo':'habitacion6','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=7 and fila<=10) & (columna>=4 and columna<=20)):
 			situacion = {'Tipo':'habitacion7','Horizontal':fila,'Vertical':columna}	
-		elif (((fila>=8 and fila<=10) & (columna>=26 and columna<=44))or (fila==7 and(columna>=27 and columna<=43))):
+		elif (((fila>=8 and fila<=10) & (columna>=26 and columna<=44))or (fila==7 and(columna>=26 and columna<=42))):
 			situacion = {'Tipo':'habitacion8','Horizontal':fila,'Vertical':columna}		
 		elif ((fila>=8 and fila<=10) & (columna>=90 and columna<=98)):
 			situacion = {'Tipo':'habitacion9','Horizontal':fila,'Vertical':columna}
@@ -1035,6 +1035,8 @@ class Mapa():
 
 		return(situacion)
 
+
+# Este procedimiento muestra la habiración o pasillo/s descubiertos por el heroe
 	def activa_exploracion(self,posicion_donde_mueve,lista):
 
 		if posicion_donde_mueve["Tipo"]== "habitacion1":
@@ -1116,7 +1118,7 @@ class Mapa():
 			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
 				for k in range(len(linea)):
 					if linea[k].isdigit()== False:
-						if ((i>=1 and i<=7) & (k>=88 and k<=102)): #Si estamos en la habitación mostramos el contenido
+						if ((i>=1 and i<=7) & (k>=88 and k<=112)): #Si estamos en la habitación mostramos el contenido
 							if posicion_donde_mueve["Horizontal"]==i:
 								lista = list(linea)
 								lista[k+1]="1"
@@ -1135,6 +1137,298 @@ class Mapa():
 				for k in range(len(linea)):
 					if linea[k].isdigit()== False:
 						if ((i>=1 and i<=6) & (k>=112 and k<=134)): #Si estamos en la habitación mostramos el contenido
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+							
+		if posicion_donde_mueve["Tipo"]== "habitacion7":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if ((i>=6 and i<=11) & (k>=2 and k<=24)): #Si estamos en la habitación mostramos el contenido
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+
+		if posicion_donde_mueve["Tipo"]== "habitacion8":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (((i>=8 and i<=11) & (k>=24 and k<=46)) or (((i>=6 and i<=7) & (k>=24 and k<=44)))): #Si estamos en la habitación mostramos el contenido
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+		
+
+		if posicion_donde_mueve["Tipo"]== "habitacion9":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if ((i>=7 and i<=11) & (k>=88 and k<=100)) :
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion10":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if ((i>=7 and i<=11) & (k>=100 and k<=112)) :
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion11":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if ((i>=6 and i<=11) & (k>=112 and k<=124)) :
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion12":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if ((i>=6 and i<=11) & (k>=124 and k<=134)) :
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+											
+		# habitacion central
+		if posicion_donde_mueve["Tipo"]== "habitacion13":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=9 and i<=16) & (k>=50 and k<=84):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+		
+		if posicion_donde_mueve["Tipo"]== "habitacion14":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=13 and i<=18) & (k>=2 and k<=22):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion15":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=13 and i<=18) & (k>=22 and k<=46):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea	
+
+		if posicion_donde_mueve["Tipo"]== "habitacion16":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=13 and i<=19) & (k>=88 and k<=112):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea													
+
+		if posicion_donde_mueve["Tipo"]== "habitacion17":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=13 and i<=19) & (k>=112 and k<=134):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion18":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=18 and i<=23) & (k>=2 and k<=22):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion19":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=18 and i<=23) & (k>=22 and k<=46):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion20":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=18 and i<=23) & (k>=46 and k<=58):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+
+		if posicion_donde_mueve["Tipo"]== "habitacion21":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=18 and i<=23) & (k>=72 and k<=88):
+							if posicion_donde_mueve["Horizontal"]==i:
+								lista = list(linea)
+								lista[k+1]="1"
+								linea= "".join(lista)
+							else:
+								lista_aux = list(linea)
+								lista_aux[k+1]="1"
+								linea= "".join(lista_aux)	
+							self.mapa_reto[i]=linea
+	
+		if posicion_donde_mueve["Tipo"]== "habitacion22":
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (i>=19 and i<=23) & (k>=88 and k<=112):
 							if posicion_donde_mueve["Horizontal"]==i:
 								lista = list(linea)
 								lista[k+1]="1"
@@ -1299,6 +1593,7 @@ class Mapa():
 									lista[k+1]="1"
 								linea= "".join(lista)
 								self.mapa_reto[i]=linea
+								
 		#Pasillo horizontal encima de la habitacion central y lateral derecho
 		elif(posicion_donde_mueve["Tipo"]=="intersec" and  posicion_donde_mueve["Vertical"]==3 and posicion_donde_mueve["Horizontal"]==9):
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
