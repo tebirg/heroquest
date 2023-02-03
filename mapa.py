@@ -55,7 +55,7 @@ class Mapa():
 
 			for k in range(len(linea)):
 
-				if (linea[k].isdigit()== False and k<137 and linea[k]!='-' and linea[k]!='|') :
+				if (linea[k].isdigit()== False and k<137 and linea[k]!='-' and linea[k]!='|' and linea[k]!='_') :
 					# Si estamos en la ultima casilla ha de ser fin de linea.
 					if k==136:
 						salto="\n"
@@ -422,7 +422,7 @@ class Mapa():
 			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-					if linea[k]=='*' and movimiento=="down" and sw==True:				
+					if linea[k]=='*' and movimiento=="down" and i<24 and sw==True:				
 						fila	=i
 						columna	=k
 						posicion_donde_mueve=self.esta_en(i+1,columna)
@@ -757,16 +757,16 @@ class Mapa():
 								break
 							
 			# -------------- mueve derecha ---------------------------
-					elif linea[k]=='*' and movimiento=="right" and k<=135 and i<35 and sw==True:
+					elif linea[k]=='*' and movimiento=="right" and k<=134 and i<25 and sw==True:
 						fila	=i
 						columna	=k
 						
 						posicion_donde_mueve=self.esta_en(fila,columna+2)
-						lista = list(linea)
-						
+												
 						if linea[columna+2]== "■":
 							if(posicion_donde_mueve["Tipo"]==posicion_actual["Tipo"] or ((posicion_actual["Tipo"]=="intersec" or posicion_donde_mueve["Tipo"]=="intersec") and (posicion_actual["Vertical"]== posicion_donde_mueve["Vertical"] or posicion_actual["Horizontal"]== posicion_donde_mueve["Horizontal"]))) :
 								self.pos_hero=self.esta_en(fila,(columna+2))
+								lista = list(linea)
 								lista[columna+2]= "*"                        # Es +2 porque pese a moverse una posicion en la linea tenemos números para las visualizaciones en el mapa.
 								lista[columna]= "■"
 								sw=False
@@ -784,14 +784,15 @@ class Mapa():
 						# º  trampa de abismo (ALT 176)
 						# > Trampa flechas
 						# ® Tesoro
-						elif lista[columna+2]=='®' or lista[columna+2]=='>' or lista[columna+2]=='º' or lista[columna+2]=='Ç' or lista[columna+2]=='^':
+						elif linea[columna+2]=='®' or linea[columna+2]=='>' or linea[columna+2]=='º' or linea[columna+2]=='Ç' or linea[columna+2]=='^':
 							
-							if lista[columna + 3]== "2" :
+							if linea[columna + 3]== "2" :
 								mensaje="Por aqui no puedes pasar amigo.\n Yo que tu lo esquivaría.\n"	
 								sw=False
 								break
-							elif lista[columna + 3]== "1" : #hay q ver como restaurar el tesoro que había.. o lo que hubiese.. quizas con un 3 para indicar que se ha de leer del original
+							elif linea[columna + 3]== "1" : #hay q ver como restaurar el tesoro que había.. o lo que hubiese.. quizas con un 3 para indicar que se ha de leer del original
 								self.pos_hero=self.esta_en(fila,(columna+2))
+								lista = list(linea)
 								lista[columna+2]= "*"
 								lista[columna + 3]== "3"
 								lista[columna]= "■"
@@ -860,16 +861,15 @@ class Mapa():
 								lista=self.activa_exploracion(posicion_donde_mueve,lista)
 								lista[columna+4]= "*" # Esto es para cruzar la puerta
 								lista[columna]="■"
+								sw=False
 								linea= "".join(lista)
 								self.mapa_reto[i]=linea
 								self.muestra_mapa_explorado()
-								sw=False
 								break
 							else:
 								lista = list(linea)
-								
-								lista=self.activa_exploracion(posicion_donde_mueve,lista)
 								self.pos_hero=self.esta_en(fila,(columna+2))
+								lista=self.activa_exploracion(posicion_donde_mueve,lista)
 								lista[columna]="■"
 								lista[columna+2]= "*"
 								linea= "".join(lista)
@@ -1014,15 +1014,15 @@ class Mapa():
 			situacion = {'Tipo':'habitacion14','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=14 and fila<=17) & (columna>=24 and columna<=44)):
 			situacion = {'Tipo':'habitacion15','Horizontal':fila,'Vertical':columna}		
-		elif ((fila>=14 and fila<=18) & (columna>=90 and columna<=100)):
+		elif ((fila>=14 and fila<=18) & (columna>=90 and columna<=110)):
 			situacion = {'Tipo':'habitacion16','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=14 and fila<=18) & (columna>=104 and columna<=132)):
+		elif ((fila>=14 and fila<=18) & (columna>=114 and columna<=132)):
 			situacion = {'Tipo':'habitacion17','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=19 and fila<=22) & (columna>=4 and columna<=20)):
 			situacion = {'Tipo':'habitacion18','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=19 and fila<=22) & (columna>=24 and columna<=44)):
 			situacion = {'Tipo':'habitacion19','Horizontal':fila,'Vertical':columna}
-		elif ((fila>=19 and fila<=22) & (columna>=28 and columna<=56)):
+		elif ((fila>=19 and fila<=22) & (columna>=48 and columna<=56)):
 			situacion = {'Tipo':'habitacion20','Horizontal':fila,'Vertical':columna}
 		elif ((fila>=19 and fila<=22) & (columna>=74 and columna<=86)):
 			situacion = {'Tipo':'habitacion21','Horizontal':fila,'Vertical':columna}
@@ -1035,9 +1035,30 @@ class Mapa():
 
 		return(situacion)
 
-
-# Este procedimiento muestra la habiración o pasillo/s descubiertos por el heroe
+										
+#---------------------------------------------------------------------------------
+# Este procedimiento muestra la habitación o pasillo/s descubiertos por el heroe |
+#---------------------------------------------------------------------------------
 	def activa_exploracion(self,posicion_donde_mueve,lista):
+
+
+		miposicion = posicion_donde_mueve["Tipo"]
+
+		if miposicion[0]=='h' 	:
+			lista = self.activa_exploracion_habitaciones(posicion_donde_mueve, lista)
+		elif miposicion[0]=='i'	:
+			lista = self.activa_exploracion_intersecciones(posicion_donde_mueve, lista)
+		elif miposicion[0]=='p'	:
+			lista = self.activa_exploracion_pasillos(posicion_donde_mueve, lista)
+		else : raise Exception("No hay zona a explorar")	
+
+#Debemos actualizar la linea actual del movimiento y devolversela aquien nos llama.
+		return(lista)
+
+#---------------------------------------------------------------------------------
+# Este procedimiento muestra las habitaciónes                                    |
+#---------------------------------------------------------------------------------
+	def activa_exploracion_habitaciones(self,posicion_donde_mueve,lista):
 
 		if posicion_donde_mueve["Tipo"]== "habitacion1":
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
@@ -1457,8 +1478,14 @@ class Mapa():
 								linea= "".join(lista_aux)
 								
 							self.mapa_reto[i]=linea
+		return(lista)
 
-		elif (posicion_donde_mueve["Tipo"]=="pasillo" and  posicion_donde_mueve["Horizontal"]==18 and posicion_donde_mueve["Vertical"]==0):
+#---------------------------------------------------------------------------------
+# Este procedimiento muestra las pasillos                                        |
+#---------------------------------------------------------------------------------
+	def activa_exploracion_pasillos(self,posicion_donde_mueve,lista):
+
+		if (posicion_donde_mueve["Tipo"]=="pasillo" and  posicion_donde_mueve["Horizontal"]==18 and posicion_donde_mueve["Vertical"]==0):
 			
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 			for i in range(len(self.mapa_reto)):
@@ -1466,20 +1493,36 @@ class Mapa():
 			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
 				for k in range(len(linea)):
 					if linea[k].isdigit()== False:
-						if (((i==24 and (k>=0 and k<=137)) or (i==23 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<25): #Si estamos en la habitación mostramos el contenido hasta 134 por el muro
-							if posicion_donde_mueve["Horizontal"]==i:
-								lista = list(linea)
-								if lista[k+1]=="0":
-									lista[k+1]="1"
-								linea= "".join(lista)
-							else:
+						if (((i==24 and (k>=0 and k<=136)) or (i==23 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<25): 
 								lista_aux = list(linea)
-								if lista[k+1]=="0":
+								if lista_aux[k+1]=="0":
 									lista_aux[k+1]="1"
 								linea= "".join(lista_aux)
-							self.mapa_reto[i]=linea
+								self.mapa_reto[i]=linea
 
-		elif (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]!=10 and posicion_donde_mueve["Horizontal"]!=1):
+
+		if (posicion_donde_mueve["Tipo"]=="pasillo" and  posicion_donde_mueve["Horizontal"]==0 and posicion_donde_mueve["Vertical"]==4):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					if linea[k].isdigit()== False:
+						if (k>=133 and k<=136 and i<=24) :
+								lista_aux = list(linea)
+								if lista_aux[k+1]=="0":
+									lista_aux[k+1]="1"
+								linea= "".join(lista_aux)
+								self.mapa_reto[i]=linea
+		
+		return(lista)
+
+#---------------------------------------------------------------------------------
+# Este procedimiento muestra las intersecciones                                   |
+#---------------------------------------------------------------------------------	
+	def activa_exploracion_intersecciones(self,posicion_donde_mueve,lista):
+
+		if (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]!=10 and posicion_donde_mueve["Horizontal"]!=1):
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 			for i in range(len(self.mapa_reto)):
 				linea=self.mapa_reto[i].strip()
@@ -1524,6 +1567,7 @@ class Mapa():
 								lista[k+1]="1"
 							linea= "".join(lista)
 							self.mapa_reto[i]=linea
+
 		#Esquina superior derecha
 		elif(posicion_donde_mueve["Tipo"]=="intersec" and  posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]==1):
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
@@ -1541,6 +1585,7 @@ class Mapa():
 									lista[k+1]="1"
 								linea= "".join(lista)
 								self.mapa_reto[i]=linea
+
 		#Pasillo central superior
 		elif(posicion_donde_mueve["Tipo"]=="intersec" and  posicion_donde_mueve["Vertical"]==0 and posicion_donde_mueve["Horizontal"]==1):
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
@@ -1620,12 +1665,8 @@ class Mapa():
 									lista[k+1]="1"
 								linea= "".join(lista)
 								self.mapa_reto[i]=linea
-							
-								
-		#print("sale activa exploracion..")
-		#Debemos actualizar la linea actual del movimiento y devolversela aquien nos llama.
-		return(lista)
-										
+		return(lista)			
+
 
 				
 				

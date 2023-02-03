@@ -4,7 +4,10 @@
 from colorama import init, Fore, Back
 from reto import Reto
 from mapa import Mapa
+from playsound import playsound
 import os
+
+playsound('./sonidos/melodia.mp3',block=False)
 
 os.system("clear")
 print ("\n")
