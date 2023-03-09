@@ -3,6 +3,15 @@ Juego de rol por consola que emula al heroquest. Permitirá crear retos propios 
 mapa interactivo por el cual el heroe se moverá. inicialmente está creado para un solo jugador contra
 la máquina que hará las veces de Malvado Brujo.
 
+Pantalla principal:
+
+![image](https://user-images.githubusercontent.com/96789961/224074946-05559389-dbb8-44bb-baf8-9e93a4b0fd47.png)
+
+Ejemplo de Reto:
+
+![image](https://user-images.githubusercontent.com/96789961/224075140-095d9996-f79b-44c3-96f3-25044b1609c4.png)
+
+
 El mapa se verá de la siguiente forma:
 
 ![image](https://user-images.githubusercontent.com/96789961/224062504-345311c8-8bdc-4d4a-993f-d623ec30efc9.png)
