@@ -45,11 +45,17 @@ La simbología dentro del mapa es:
 #Instalacion en linux debian:
 
 sudo apt install git
+
 sudo apt install python3
+
 sudo apt install pip
+
 sudo apt install libcairo2-dev libxt-dev libgirepository1.0-dev
+
 pip install pycairo PyGObject
+
 sudo apt-get install gstreamer-1.0
+
 sudo git clone https://github.com/tebirg/heroquest
 
 
