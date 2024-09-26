@@ -209,7 +209,7 @@ class Mapa():
 			return False
 
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
-	# Esta funcion buscará moverá al personaje
+	# Esta funcion buscará y moverá al personaje
 	#-----------------------------------------------------------------------------------------------------------------------------------------------------	
 	def heroe_se_mueve(self,movimiento):
 		#print("heroe se mueve..")
@@ -419,8 +419,6 @@ class Mapa():
 						sw=False
 						print('\n')
 						break
-			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 			# -------------- mueve abajo -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 					if linea[k]=='*' and movimiento=="down" and i<24 and sw==True:				
 						fila	=i
@@ -906,6 +904,7 @@ class Mapa():
 
 
 
+
 		if fila==0  and columna==0 			:
 			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':1}		#interseccion
 		elif fila==0  and columna==136 			:
@@ -932,7 +931,7 @@ class Mapa():
 			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':1}	#interseccion
 		elif fila==24 and columna==136 			:
 			situacion = {'Tipo':'intersec','Horizontal':18,'Vertical':4}	#interseccion
-		elif fila==0 and (columna>=60 or columna<=70)			:
+		elif fila==0 and (columna>=60 and columna<=70)			:
 			situacion = {'Tipo':'intersec','Horizontal':1,'Vertical':0}		#interseccion pasillo central superior
 		elif fila==0					:
 			situacion = {'Tipo':'pasillo','Horizontal':1,'Vertical':0}
@@ -1522,6 +1521,40 @@ class Mapa():
 #---------------------------------------------------------------------------------	
 	def activa_exploracion_intersecciones(self,posicion_donde_mueve,lista):
 
+
+
+		#Primer pasillo vertical y ultimo horizontal
+		if (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==1 and posicion_donde_mueve["Horizontal"]==18):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					
+					if (linea[k].isdigit()== False):
+						if (k==0 or (k==2 and i!=12)) or (((i==24 and (k>=0 and k<=136)) or (i==23 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<25): 
+							lista = list(linea)
+							if lista[k+1]=="0":
+								lista[k+1]="1"
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea  
+
+		#Pasillo de abajo del todo, el 18. Esquina inferior derecha.
+		if (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]==18):
+			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
+			for i in range(len(self.mapa_reto)):
+				linea=self.mapa_reto[i].strip()
+			# Comenzamos la lectura de las columnas del mapa, ojo los contadores inician en 0	
+				for k in range(len(linea)):
+					
+					if (linea[k].isdigit()== False):
+						if (((i==24 and (k>=0 and k<=136)) or (i==23 and((k>=2 and k<=58)or (k>=72 and k<=135))))and i<25): 
+							lista = list(linea)
+							if lista[k+1]=="0":
+								lista[k+1]="1"
+							linea= "".join(lista)
+							self.mapa_reto[i]=linea  
+  
 		if (posicion_donde_mueve["Tipo"]=="intersec" and posicion_donde_mueve["Vertical"]==4 and posicion_donde_mueve["Horizontal"]!=10 and posicion_donde_mueve["Horizontal"]!=1):
 			# Comenzamos la lectura de las filas del mapa, ojo los contadores inician en 0
 			for i in range(len(self.mapa_reto)):
